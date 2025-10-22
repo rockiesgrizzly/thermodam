@@ -5,4 +5,7 @@
 //  Created by Josh MacDonald on 10/22/25.
 //
 
-struct PresentationFactory {}
+public struct PresentationFactory {
+    
+    public init() {}
+}

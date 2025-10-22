@@ -5,4 +5,7 @@
 //  Created by Josh MacDonald on 10/22/25.
 //
 
-struct DataFactory {}
+public struct DataFactory {
+    
+    public init() {}
+}

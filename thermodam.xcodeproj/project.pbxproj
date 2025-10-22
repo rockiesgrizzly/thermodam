@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		439584392EA97A480025AAD5 /* PresentationLayer in Frameworks */ = {isa = PBXBuildFile; productRef = 439584382EA97A480025AAD5 /* PresentationLayer */; };
+		4395843B2EA97A4C0025AAD5 /* DomainLayer in Frameworks */ = {isa = PBXBuildFile; productRef = 4395843A2EA97A4C0025AAD5 /* DomainLayer */; };
+		4395843D2EA97A510025AAD5 /* DataLayer in Frameworks */ = {isa = PBXBuildFile; productRef = 4395843C2EA97A510025AAD5 /* DataLayer */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4349015C2EA7F2E60025BC21 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,22 +35,9 @@
 		434901652EA7F2E60025BC21 /* thermodamUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = thermodamUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		439584122EA976DE0025AAD5 /* Exceptions for "thermodam" folder in "thermodam" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Domain/UseCase/CalculateHeatTransferUseCase.swift,
-			);
-			target = 4349014D2EA7F2E50025BC21 /* thermodam */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		434901502EA7F2E50025BC21 /* thermodam */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				439584122EA976DE0025AAD5 /* Exceptions for "thermodam" folder in "thermodam" target */,
-			);
 			path = thermodam;
 			sourceTree = "<group>";
 		};
@@ -65,6 +58,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4395843B2EA97A4C0025AAD5 /* DomainLayer in Frameworks */,
+				439584392EA97A480025AAD5 /* PresentationLayer in Frameworks */,
+				4395843D2EA97A510025AAD5 /* DataLayer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +87,7 @@
 				434901502EA7F2E50025BC21 /* thermodam */,
 				4349015E2EA7F2E60025BC21 /* thermodamTests */,
 				434901682EA7F2E60025BC21 /* thermodamUITests */,
+				439584372EA97A480025AAD5 /* Frameworks */,
 				4349014F2EA7F2E50025BC21 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -103,6 +100,13 @@
 				434901652EA7F2E60025BC21 /* thermodamUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		439584372EA97A480025AAD5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +129,9 @@
 			);
 			name = thermodam;
 			packageProductDependencies = (
+				439584382EA97A480025AAD5 /* PresentationLayer */,
+				4395843A2EA97A4C0025AAD5 /* DomainLayer */,
+				4395843C2EA97A510025AAD5 /* DataLayer */,
 			);
 			productName = thermodam;
 			productReference = 4349014E2EA7F2E50025BC21 /* thermodam.app */;
@@ -208,6 +215,11 @@
 			);
 			mainGroup = 434901452EA7F2E50025BC21;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				439584212EA978E00025AAD5 /* XCLocalSwiftPackageReference "PresentationLayer" */,
+				439584222EA978FD0025AAD5 /* XCLocalSwiftPackageReference "DomainLayer" */,
+				439584232EA979150025AAD5 /* XCLocalSwiftPackageReference "DataLayer" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4349014F2EA7F2E50025BC21 /* Products */;
 			projectDirPath = "";
@@ -418,6 +430,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -450,6 +463,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -591,6 +605,39 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		439584212EA978E00025AAD5 /* XCLocalSwiftPackageReference "PresentationLayer" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PresentationLayer;
+		};
+		439584222EA978FD0025AAD5 /* XCLocalSwiftPackageReference "DomainLayer" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = DomainLayer;
+		};
+		439584232EA979150025AAD5 /* XCLocalSwiftPackageReference "DataLayer" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = DataLayer;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		439584382EA97A480025AAD5 /* PresentationLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 439584212EA978E00025AAD5 /* XCLocalSwiftPackageReference "PresentationLayer" */;
+			productName = PresentationLayer;
+		};
+		4395843A2EA97A4C0025AAD5 /* DomainLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 439584222EA978FD0025AAD5 /* XCLocalSwiftPackageReference "DomainLayer" */;
+			productName = DomainLayer;
+		};
+		4395843C2EA97A510025AAD5 /* DataLayer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 439584232EA979150025AAD5 /* XCLocalSwiftPackageReference "DataLayer" */;
+			productName = DataLayer;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 434901462EA7F2E50025BC21 /* Project object */;
 }
