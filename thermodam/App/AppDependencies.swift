@@ -40,7 +40,3 @@ final class AppDependencies {
     
 
 }
-
-struct DataFactory {}
-struct DomainFactory {}
-struct PresentationFactory {}

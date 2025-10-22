@@ -29,9 +29,22 @@
 		434901652EA7F2E60025BC21 /* thermodamUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = thermodamUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		439584122EA976DE0025AAD5 /* Exceptions for "thermodam" folder in "thermodam" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Domain/UseCase/CalculateHeatTransferUseCase.swift,
+			);
+			target = 4349014D2EA7F2E50025BC21 /* thermodam */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		434901502EA7F2E50025BC21 /* thermodam */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				439584122EA976DE0025AAD5 /* Exceptions for "thermodam" folder in "thermodam" target */,
+			);
 			path = thermodam;
 			sourceTree = "<group>";
 		};

@@ -71,8 +71,8 @@ The app uses Clean Swift architecture which provides clear separation of concern
 - **ThermodynamicsEngine**: pure calculation functions - stateless
 
 ### Design Goals
-- Environment updates don't block pump changes
+- Environment, solar, pump, and tank updates occur independently
 - Heat transfer calculations read from both repos but only write to SystemState
-- Each repository can be backed by independent state (actors, combine subjects, etc.)
+- Each repository can be backed by independent state
 
 
