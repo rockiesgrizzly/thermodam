@@ -30,50 +30,49 @@ The app uses Clean Swift architecture which provides clear separation of concern
   - **Repository pattern**: Abstraction between domain and data layers
   - **User interaction**: Clear entry point
 
-## General approach
+## General Approach
 
-# Visual Objects
-  - Environment/Sun: draggable, shows solar intensity
-  - SolarPanel: shows temperature, heat absorbed
-  - Pump: shows on/off state, flow rate:
-  - StorageTank: shows temperature, volume, energy stored
+### Visual Objects
+- Environment/Sun: draggable, shows solar intensity
+- SolarPanel: shows temperature, heat absorbed
+- Pump: shows on/off state, flow rate
+- StorageTank: shows temperature, volume, energy stored
 
-# Views 
-  New structure:
-  - SimulationView: main container that orchestrates everything
-  - EnvironmentView: draggable sun, solar intensity display
-  - SolarPanelView: panel temperature, heat absorption
-  - PumpView: pump controls, flow rate display
-  - StorageTankView: tank temperature, volume, energy stored
-  - StatisticsView: overall metrics and graphs
+### Views
+- **SimulationView**: main container that orchestrates everything
+- **EnvironmentView**: draggable sun, solar intensity display
+- **SolarPanelView**: panel temperature, heat absorption
+- **PumpView**: pump controls, flow rate display
+- **StorageTankView**: tank temperature, volume, energy stored
+- **StatisticsView**: overall metrics and graphs
 
-# Use Cases 
-  **UpdateEnvironmentUseCase**:
-  - Writes: sun position, solar intensity, ambient temperature
-  - Reads: nothing (just updates from user input)
+### Use Cases
+**UpdateEnvironmentUseCase**:
+- Writes: sun position, solar intensity, ambient temperature
+- Reads: nothing (just updates from user input)
 
-  **CalculateHeatTransferUseCase**:
-  - Reads: environment state, component states (panel temp, tank temp, pump status)
-  - Writes: updated temperatures, energy values
-  - Uses: ThermodynamicsEngine for calculations
+**CalculateHeatTransferUseCase**:
+- Reads: environment state, component states (panel temp, tank temp, pump status)
+- Writes: updated temperatures, energy values
+- Uses: ThermodynamicsEngine for calculations
 
-  **TogglePumpUseCase**:
-  - Writes: pump on/off, flow rate
-  - Reads: maybe current pump state
+**TogglePumpUseCase**:
+- Writes: pump on/off, flow rate
+- Reads: current pump state
 
-# Data Handling 
-Repositories:
-  - **EnvironmentRepository**: sun position, solar intensity, ambient temp
-  - **SystemStateRepository**: component temps, flow rates, energy stored
-  - **ConfigurationRepository**: constants: specific heat, surface areas, etc.
+### Data Handling
+**Repositories**:
+- **EnvironmentRepository**: sun position, solar intensity, ambient temp
+- **SystemStateRepository**: component temps, flow rates, energy stored
+- **ConfigurationRepository**: constants: specific heat, surface areas, etc.
 
-Data Sources:
-  - **LocalDataSource**: in-memory state management
-  - **ThermodynamicsEngine**: pure calculation functions - stateless
+**Data Sources**:
+- **LocalDataSource**: in-memory state management
+- **ThermodynamicsEngine**: pure calculation functions - stateless
 
-Goals
-  - Environment updates don't block pump changes
-  - Heat transfer calculations read from both repos but only write to SystemState
-  - Each repository can be backed by independent state (actors, combine subjects, etc.
+### Design Goals
+- Environment updates don't block pump changes
+- Heat transfer calculations read from both repos but only write to SystemState
+- Each repository can be backed by independent state (actors, combine subjects, etc.)
 
 

@@ -43,3 +43,15 @@ Minimum Requirements
 
 ### Components
 Environment > Pump > Solar Panel > Storage Tank
+
+  - Environment provides solar energy (sunlight)
+  - Solar Panel absorbs heat from sunlight
+  - Pump circulates fluid between panel and tank
+  - Storage Tank stores the heated fluid
+
+  The system forms a closed loop: fluid gets heated in the solar panel, pump circulates it to the storage tank, then back to the panel.
+
+  Key evaluation criteria:
+  1. Thermodynamic correctness (proper heat transfer physics)
+  2. Code approach (Clean Architecture ✓)
+  3. Results (accurate simulation output)
