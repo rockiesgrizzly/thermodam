@@ -15,13 +15,31 @@ public struct SimulationView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 20) {
-            controlBar
-            systemVisualization
-            StatisticsView(viewModel: viewModel.statisticsViewModel)
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                // Top 2/3: Control bar + Graphics
+                VStack(spacing: 12) {
+                    controlBar
+                        .padding(.horizontal)
+                        .padding(.top)
+
+                    graphicsArea
+                }
+                .frame(height: geometry.size.height * 0.67)
+
+                Divider()
+
+                // Bottom 1/3: Statistics in ScrollView
+                ScrollView {
+                    StatisticsView(viewModel: viewModel.statisticsViewModel)
+                        .padding()
+                }
+                .frame(height: geometry.size.height * 0.33)
+                .background(Color(.secondarySystemBackground))
+            }
         }
-        .padding()
         .background(Color(.systemBackground))
+        .ignoresSafeArea(edges: .bottom)
     }
 
     // MARK: - View Builders
@@ -61,55 +79,40 @@ public struct SimulationView: View {
     }
 
     @ViewBuilder
-    private var systemVisualization: some View {
-        GeometryReader { geometry in
-            ZStack {
-                // Background pipes (closed loop)
-                pipeConnection
-
-                // System components in horizontal layout
-                HStack(spacing: 40) {
-                    // Left side: Environment and Solar Panel
-                    VStack(spacing: 20) {
-                        EnvironmentView(viewModel: viewModel.environmentViewModel)
-                            .frame(width: 250, height: 300)
-
-                        SolarPanelView(viewModel: viewModel.solarPanelViewModel)
-                            .frame(width: 250)
-                    }
-
-                    Spacer()
-
-                    // Center: Pump control
-                    pumpControl
-
-                    Spacer()
-
-                    // Right side: Storage Tank
-                    StorageTankView(viewModel: viewModel.storageTankViewModel)
-                        .frame(width: 200)
+    private var graphicsArea: some View {
+        ScrollView {
+            VStack(spacing: 12) {
+                // Environment with draggable sun
+                EnvironmentView(viewModel: viewModel.environmentViewModel)
+                
+                HStack {
+                    SolarPanelView(viewModel: viewModel.solarPanelViewModel)
+                    
+                    // Pump control (centered, compact)
+                    compactPumpControl
                 }
-                .padding(.horizontal, 20)
+                
+                StorageTankView(viewModel: viewModel.storageTankViewModel)
             }
+            .padding(.horizontal)
         }
-        .frame(height: 400)
     }
 
     @ViewBuilder
-    private var pumpControl: some View {
-        VStack(spacing: 12) {
+    private var compactPumpControl: some View {
+        HStack(spacing: 16) {
             // Pump visual
             ZStack {
                 Circle()
                     .fill(viewModel.pump.isRunning ? Color.green.opacity(0.2) : Color.gray.opacity(0.1))
-                    .frame(width: 80, height: 80)
+                    .frame(width: 60, height: 60)
 
                 Circle()
-                    .stroke(viewModel.pump.isRunning ? Color.green : Color.gray, lineWidth: 3)
-                    .frame(width: 80, height: 80)
+                    .stroke(viewModel.pump.isRunning ? Color.green : Color.gray, lineWidth: 2)
+                    .frame(width: 60, height: 60)
 
                 Image(systemName: "arrow.triangle.2.circlepath")
-                    .font(.system(size: 30))
+                    .font(.system(size: 24))
                     .foregroundStyle(viewModel.pump.isRunning ? .green : .gray)
                     .rotationEffect(.degrees(viewModel.pump.isRunning ? 360 : 0))
                     .animation(
@@ -118,97 +121,38 @@ public struct SimulationView: View {
                     )
             }
 
-            // Pump toggle button
-            Button {
-                Task {
-                    await viewModel.respondToPumpToggle()
-                }
-            } label: {
-                Text(viewModel.pump.isRunning ? "Turn OFF" : "Turn ON")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(viewModel.pump.isRunning ? Color.red : Color.green)
-                    .foregroundStyle(.white)
-                    .cornerRadius(6)
-            }
-
-            // Pump status
-            VStack(spacing: 4) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Pump")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .font(.headline)
 
                 Text(viewModel.pumpStatusText)
                     .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundStyle(viewModel.pump.isRunning ? .green : .gray)
+                    .foregroundStyle(viewModel.pump.isRunning ? .green : .secondary)
+
+                // Pump toggle button
+                Button {
+                    Task {
+                        await viewModel.respondToPumpToggle()
+                    }
+                } label: {
+                    Text(viewModel.pump.isRunning ? "Turn OFF" : "Turn ON")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(viewModel.pump.isRunning ? Color.red : Color.green)
+                        .foregroundStyle(.white)
+                        .cornerRadius(6)
+                }
             }
+
+            Spacer()
         }
         .padding()
         .background(Color(.secondarySystemBackground))
         .cornerRadius(12)
     }
 
-    @ViewBuilder
-    private var pipeConnection: some View {
-        GeometryReader { geometry in
-            Path { path in
-                let leftX = geometry.size.width * 0.2
-                let rightX = geometry.size.width * 0.8
-                let topY = geometry.size.height * 0.3
-                let bottomY = geometry.size.height * 0.7
-
-                // Top pipe: Panel to Pump to Tank
-                path.move(to: CGPoint(x: leftX, y: topY))
-                path.addLine(to: CGPoint(x: rightX, y: topY))
-
-                // Bottom pipe: Tank back to Panel (return)
-                path.move(to: CGPoint(x: rightX, y: bottomY))
-                path.addLine(to: CGPoint(x: leftX, y: bottomY))
-
-                // Vertical connectors
-                path.move(to: CGPoint(x: leftX, y: topY))
-                path.addLine(to: CGPoint(x: leftX, y: bottomY))
-
-                path.move(to: CGPoint(x: rightX, y: topY))
-                path.addLine(to: CGPoint(x: rightX, y: bottomY))
-            }
-            .stroke(
-                Color.orange.opacity(0.4),
-                style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round)
-            )
-
-            // Animated flow particles when pump is running
-            if viewModel.pump.isRunning {
-                flowParticles
-            }
-        }
-    }
-
-    @ViewBuilder
-    private var flowParticles: some View {
-        // Simple animated circles moving through pipes
-        ForEach(0..<3) { index in
-            Circle()
-                .fill(Color.orange)
-                .frame(width: 8, height: 8)
-                .offset(x: animatedOffset(for: index))
-                .animation(
-                    .linear(duration: 3)
-                        .repeatForever(autoreverses: false)
-                        .delay(Double(index) * 0.3),
-                    value: viewModel.pump.isRunning
-                )
-        }
-    }
-
-    // MARK: - Helpers
-
-    private func animatedOffset(for index: Int) -> CGFloat {
-        return viewModel.pump.isRunning ? 300 : 0
-    }
 }
 
 import DomainLayer // only used for preview setup purposes
