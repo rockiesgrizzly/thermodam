@@ -12,7 +12,7 @@ import SwiftUI
 struct thermodamApp: App {
     var body: some Scene {
         WindowGroup {
-            SimulationView()
+            AnyView(AppDependencies.contentView)
         }
     }
 }

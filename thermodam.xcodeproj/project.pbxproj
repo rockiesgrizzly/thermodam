@@ -51,6 +51,11 @@
 			path = thermodamUITests;
 			sourceTree = "<group>";
 		};
+		439584512EA97DBA0025AAD5 /* zDev */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = zDev;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +94,7 @@
 				434901682EA7F2E60025BC21 /* thermodamUITests */,
 				439584372EA97A480025AAD5 /* Frameworks */,
 				4349014F2EA7F2E50025BC21 /* Products */,
+				439584512EA97DBA0025AAD5 /* zDev */,
 			);
 			sourceTree = "<group>";
 		};
@@ -126,6 +132,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				434901502EA7F2E50025BC21 /* thermodam */,
+				439584512EA97DBA0025AAD5 /* zDev */,
 			);
 			name = thermodam;
 			packageProductDependencies = (
