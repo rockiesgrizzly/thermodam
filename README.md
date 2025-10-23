@@ -6,29 +6,37 @@ An example app showing a simple software simulation of the heat transfer from a 
 The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers.
 <img width="1735" height="895" alt="Screenshot 2025-10-22 at 1 57 41 PM" src="https://github.com/user-attachments/assets/db50a6ba-a3ab-496d-bb9d-4ccfa5d033bb" />
 
-### Presentation Layer
-- views
-- view models
-- user interaction
+### Presentation Layer (Swift Package)
+- **SimulationViewModel**: Main coordinator, holds system state, handles UI interactions
+- **Child ViewModels**: EnvironmentViewModel, SolarPanelViewModel, StorageTankViewModel, StatisticsViewModel
+- **Views**: SimulationView, EnvironmentView, SolarPanelView, StorageTankView, StatisticsView
+- **PresentationFactory**: Creates ViewModels from use cases
 
 ### App Layer
-- main app file
-- dependencies container
-- shared resources (asset files, etc)
+- **thermodamApp**: Main app entry point
+- **AppDependencies**: Composition root that wires all layer factories
+- Dependency flow: Data → Domain → Presentation
 
-### Domain Layer
-- use cases: business logic and models
+### Domain Layer (Swift Package)
+- **Models**: Environment, SolarPanel, Pump, StorageTank, SystemConfiguration
+- **Use Cases**: UpdateEnvironmentUseCase, TogglePumpUseCase, CalculateHeatTransferUseCase
+- **Repository Protocols**: Define contracts for data access
+- **DomainFactory**: Creates use cases from repository protocols
+- **Tests**: Comprehensive unit tests for all use cases
 
-### Data Layer
-- repositories: data storage/traffic handler
-- data sources: external API interactions
+### Data Layer (Swift Package)
+- **Repository Implementations**: EnvironmentRepository, SystemStateRepository, ConfigurationRepository
+- **LocalDataSource**: Thread-safe Actor for in-memory state management
+- **ThermodynamicsEngine**: Pure physics calculations implementing ThermodynamicsEngineProtocol
+- **DataFactory**: Creates repositories and data sources
+- **Tests**: Unit tests for ThermodynamicsEngine formulas
 
-### Architecture Goals
-  - **Layer separation**: Boundaries between Presentation → App → Domain → Data
-  - **Dependency rule**: Dependencies point inward (outer layers depend on inner, not vice versa)
-  - **Use case focus**: Three focused use cases handling specific operations
-  - **Repository pattern**: Abstraction between domain and data layers
-  - **User interaction**: Clear entry point
+### Architecture Principles
+- **Package isolation**: Each layer is a separate Swift Package with explicit dependencies
+- **Dependency rule**: Dependencies point inward (Domain has no dependencies, Data depends on Domain, Presentation depends on Domain)
+- **Protocol-based**: All cross-layer communication through protocols
+- **Testability**: Mock implementations for all protocols, comprehensive test coverage
+- **Separation of concerns**: Business logic (Domain), data access (Data), UI (Presentation) clearly separated
 
 ## General Approach
 
@@ -62,17 +70,29 @@ The app uses Clean Swift architecture which provides clear separation of concern
 
 ### Data Handling
 **Repositories**:
-- **EnvironmentRepository**: sun position, solar intensity, ambient temp
-- **SystemStateRepository**: component temps, flow rates, energy stored
-- **ConfigurationRepository**: constants: specific heat, surface areas, etc.
+- **EnvironmentRepository**: Manages environment state (sun position, solar intensity, ambient temp)
+- **SystemStateRepository**: Manages component states (panel/tank temperatures, pump status, flow rates, energy)
+- **ConfigurationRepository**: Provides system constants (specific heat, fluid density, heat loss coefficients, surface areas)
 
 **Data Sources**:
-- **LocalDataSource**: in-memory state management
-- **ThermodynamicsEngine**: pure calculation functions - stateless
+- **LocalDataSource**: Thread-safe Actor for in-memory state management
+- **ThermodynamicsEngine**: Stateless physics calculation engine
+
+### Thermodynamics Engine
+Pure calculation functions implementing correct physics formulas:
+- **Solar Heat Gain**: Q = I × A × α (irradiance × area × absorptivity)
+- **Heat Loss**: Q_loss = U × A × ΔT (heat transfer coefficient × area × temp difference)
+- **Fluid Heat Transfer**: Q = ṁ × c × ΔT (mass flow × specific heat × temp difference)
+- **Temperature Change**: ΔT = Q × Δt / (m × c) (heat energy over time divided by thermal mass)
+- **Thermal Energy**: E = m × c × T (mass × specific heat × temperature)
+- **Mass Flow Rate**: ṁ = V̇ × ρ (volumetric flow × density)
+
+All formulas tested with real-world values for thermodynamic correctness.
 
 ### Design Goals
 - Environment, solar, pump, and tank updates occur independently
-- Heat transfer calculations read from both repos but only write to SystemState
-- Each repository can be backed by independent state
+- Heat transfer calculations orchestrated by use case, physics delegated to ThermodynamicsEngine
+- Each repository backed by shared Actor for thread-safety
+- Dependency inversion: Domain defines protocols, Data implements them
 
 

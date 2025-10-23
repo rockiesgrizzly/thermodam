@@ -33,6 +33,7 @@
 		4349014E2EA7F2E50025BC21 /* thermodam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = thermodam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4349015B2EA7F2E60025BC21 /* thermodamTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = thermodamTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		434901652EA7F2E60025BC21 /* thermodamUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = thermodamUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4395852D2EAA99D30025AAD5 /* thermodam.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = thermodam.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -89,6 +90,7 @@
 		434901452EA7F2E50025BC21 = {
 			isa = PBXGroup;
 			children = (
+				4395852D2EAA99D30025AAD5 /* thermodam.xctestplan */,
 				434901502EA7F2E50025BC21 /* thermodam */,
 				4349015E2EA7F2E60025BC21 /* thermodamTests */,
 				434901682EA7F2E60025BC21 /* thermodamUITests */,

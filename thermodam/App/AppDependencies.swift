@@ -17,16 +17,40 @@ import SwiftUI
 @MainActor
 @Observable
 final class AppDependencies {
-    
-    // MARK: Public: Interface
-    
-    static var contentView: any View {
-        SimulationView()
+
+    init() {}
+
+    // MARK: - Public Interface
+
+    static var contentView: some View {
+        SimulationView(viewModel: presentation.simulationViewModel)
+    }
+}
+
+// MARK: - Factory Adapters
+
+extension AppDependencies {
+    /// Presentation is the only layer exposed to the app file. It consumes the domain layer.
+    var presentation: PresentationFactory {
+        PresentationFactory(
+            updateEnvironmentUseCase: domain.updateEnvironmentUseCase,
+            togglePumpUseCase: domain.togglePumpUseCase,
+            calculateHeatTransferUseCase: domain.calculateHeatTransferUseCase
+        )
     }
     
-    // MARK: Private: Layer Factories
-    private let dataFactory: DataFactory = DataFactory()
-    private let domainFactory: DomainFactory = DomainFactory()
-    private let presentationFactory: PresentationFactory = PresentationFactory()
+    /// Domain layer consumes the data layer. It's consumed by the presentation layer above.
+    private var domain: DomainFactory {
+        DomainFactory(
+            environmentRepository: data.environmentRepository,
+            systemStateRepository: data.systemStateRepository,
+            configurationRepository: data.configurationRepository,
+            thermodynamicsEngine: data.thermodynamicsEngine
+        )
+    }
     
+    /// Being the outermost layer, data does not consume any layers. It's consumed by the domain layer above.
+    private var data: DataFactory {
+        DataFactory()
+    }
 }

@@ -5,6 +5,8 @@
 //  Created by Josh MacDonald on 10/21/25.
 //
 
+import DataLayer
+import DomainLayer
 import PresentationLayer
 import SwiftUI
 
@@ -12,7 +14,7 @@ import SwiftUI
 struct thermodamApp: App {
     var body: some Scene {
         WindowGroup {
-            AnyView(AppDependencies.contentView)
+            AppDependencies.contentView
         }
     }
 }

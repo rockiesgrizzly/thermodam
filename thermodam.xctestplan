@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "83661ED3-AE48-44FA-906E-6D65655940D0",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:thermodam.xcodeproj",
+      "identifier" : "4349014D2EA7F2E50025BC21",
+      "name" : "thermodam"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:thermodam.xcodeproj",
+        "identifier" : "4349015A2EA7F2E60025BC21",
+        "name" : "thermodamTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:thermodam.xcodeproj",
+        "identifier" : "434901642EA7F2E60025BC21",
+        "name" : "thermodamUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
