@@ -3,8 +3,8 @@
 An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics
 
 ## Architecture
-The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers.
-<img width="1735" height="895" alt="Screenshot 2025-10-22 at 1 57 41 PM" src="https://github.com/user-attachments/assets/db50a6ba-a3ab-496d-bb9d-4ccfa5d033bb" />
+_The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers._
+<img width="1866" src="https://github.com/user-attachments/assets/33c3b834-9482-4db7-8a79-3bbdd205a1a6" />
 
 ### Presentation Layer (Swift Package)
 - **SimulationViewModel**: Main coordinator, holds system state, handles UI interactions
