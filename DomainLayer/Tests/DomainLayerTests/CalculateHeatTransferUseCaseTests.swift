@@ -24,14 +24,13 @@ struct CalculateHeatTransferUseCaseTests {
         let envRepo = MockEnvironmentRepo(environment: environment)
         let stateRepo = MockSystemStateRepo(panel: panel, pump: pump, tank: tank)
         let configRepo = MockConfigurationRepo()
-
-        let thermoEngine = MockThermodynamicsEngine()
+        let thermoRepo = MockThermodynamicsRepo()
 
         let useCase = CalculateHeatTransferUseCase(
             environmentRepository: envRepo,
             systemStateRepository: stateRepo,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
 
         // When: calculate for time step
@@ -54,14 +53,13 @@ struct CalculateHeatTransferUseCaseTests {
         let envRepo = MockEnvironmentRepo(environment: environment)
         let stateRepo = MockSystemStateRepo(panel: panel, pump: pump, tank: tank)
         let configRepo = MockConfigurationRepo()
-
-        let thermoEngine = MockThermodynamicsEngine()
+        let thermoRepo = MockThermodynamicsRepo()
 
         let useCase = CalculateHeatTransferUseCase(
             environmentRepository: envRepo,
             systemStateRepository: stateRepo,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
 
         // When: calculate
@@ -84,14 +82,13 @@ struct CalculateHeatTransferUseCaseTests {
         let envRepo = MockEnvironmentRepo(environment: environment)
         let stateRepo = MockSystemStateRepo(panel: panel, pump: pump, tank: tank)
         let configRepo = MockConfigurationRepo()
-
-        let thermoEngine = MockThermodynamicsEngine()
+        let thermoRepo = MockThermodynamicsRepo()
 
         let useCase = CalculateHeatTransferUseCase(
             environmentRepository: envRepo,
             systemStateRepository: stateRepo,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
 
         // When: calculate
@@ -117,14 +114,13 @@ struct CalculateHeatTransferUseCaseTests {
         let envRepo = MockEnvironmentRepo(environment: environment)
         let stateRepo = MockSystemStateRepo(panel: panel, pump: pump, tank: tank)
         let configRepo = MockConfigurationRepo()
-
-        let thermoEngine = MockThermodynamicsEngine()
+        let thermoRepo = MockThermodynamicsRepo()
 
         let useCase = CalculateHeatTransferUseCase(
             environmentRepository: envRepo,
             systemStateRepository: stateRepo,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
 
         // When: calculate
@@ -149,14 +145,13 @@ struct CalculateHeatTransferUseCaseTests {
         let envRepo = MockEnvironmentRepo(environment: environment)
         let stateRepo = MockSystemStateRepo(panel: panel, pump: pump, tank: tank)
         let configRepo = MockConfigurationRepo()
-
-        let thermoEngine = MockThermodynamicsEngine()
+        let thermoRepo = MockThermodynamicsRepo()
 
         let useCase = CalculateHeatTransferUseCase(
             environmentRepository: envRepo,
             systemStateRepository: stateRepo,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
 
         // When: calculate
@@ -178,14 +173,13 @@ struct CalculateHeatTransferUseCaseTests {
         let envRepo = MockEnvironmentRepo(environment: environment)
         let stateRepo = MockSystemStateRepo(panel: panel, pump: pump, tank: tank)
         let configRepo = MockConfigurationRepo()
-
-        let thermoEngine = MockThermodynamicsEngine()
+        let thermoRepo = MockThermodynamicsRepo()
 
         let useCase = CalculateHeatTransferUseCase(
             environmentRepository: envRepo,
             systemStateRepository: stateRepo,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
 
         // When: calculate
@@ -207,19 +201,19 @@ struct CalculateHeatTransferUseCaseTests {
         let stateRepo1 = MockSystemStateRepo(panel: panel1, pump: pump, tank: tank)
         let stateRepo2 = MockSystemStateRepo(panel: panel2, pump: pump, tank: tank)
         let configRepo = MockConfigurationRepo()
-        let thermoEngine = MockThermodynamicsEngine()
+        let thermoRepo = MockThermodynamicsRepo()
 
         let useCase1 = CalculateHeatTransferUseCase(
             environmentRepository: MockEnvironmentRepo(environment: environment),
             systemStateRepository: stateRepo1,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
         let useCase2 = CalculateHeatTransferUseCase(
             environmentRepository: MockEnvironmentRepo(environment: environment),
             systemStateRepository: stateRepo2,
             configurationRepository: configRepo,
-            thermodynamicsEngine: thermoEngine
+            thermodynamicsRepository: thermoRepo
         )
 
         // When: calculate with different time steps
@@ -310,53 +304,53 @@ final class MockConfigurationRepo: ConfigurationRepositoryProtocol, @unchecked S
     }
 }
 
-final class MockThermodynamicsEngine: ThermodynamicsEngineProtocol, @unchecked Sendable {
+final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {    
     func calculateSolarHeatGain(
-        solarIntensity: Double,
-        surfaceArea: Double,
-        absorptivity: Double
-    ) -> Double {
-        solarIntensity * surfaceArea * absorptivity
-    }
-
-    func calculateHeatLoss(
-        heatLossCoefficient: Double,
-        surfaceArea: Double,
-        temperatureDifference: Double
-    ) -> Double {
-        heatLossCoefficient * surfaceArea * temperatureDifference
-    }
-
-    func calculateFluidHeatTransfer(
-        massFlowRate: Double,
-        specificHeat: Double,
-        temperatureDifference: Double
-    ) -> Double {
-        massFlowRate * specificHeat * temperatureDifference
-    }
-
-    func calculateTemperatureChange(
-        heatPower: Double,
-        timeStep: Double,
-        mass: Double,
-        specificHeat: Double
-    ) -> Double {
-        guard mass > 0, specificHeat > 0 else { return 0 }
-        return (heatPower * timeStep) / (mass * specificHeat)
-    }
-
-    func calculateThermalEnergy(
-        mass: Double,
-        specificHeat: Double,
-        temperature: Double
-    ) -> Double {
-        mass * specificHeat * temperature
-    }
-
-    func calculateMassFlowRate(
-        volumetricFlowRate: Double,
-        density: Double
-    ) -> Double {
-        volumetricFlowRate * density
-    }
+            solarIntensity: Double,
+            surfaceArea: Double,
+            absorptivity: Double
+        ) -> Double {
+            solarIntensity * surfaceArea * absorptivity
+        }
+    
+        func calculateHeatLoss(
+            heatLossCoefficient: Double,
+            surfaceArea: Double,
+            temperatureDifference: Double
+        ) -> Double {
+            heatLossCoefficient * surfaceArea * temperatureDifference
+        }
+    
+        func calculateFluidHeatTransfer(
+            massFlowRate: Double,
+            specificHeat: Double,
+            temperatureDifference: Double
+        ) -> Double {
+            massFlowRate * specificHeat * temperatureDifference
+        }
+    
+        func calculateTemperatureChange(
+            heatPower: Double,
+            timeStep: Double,
+            mass: Double,
+            specificHeat: Double
+        ) -> Double {
+            guard mass > 0, specificHeat > 0 else { return 0 }
+            return (heatPower * timeStep) / (mass * specificHeat)
+        }
+    
+        func calculateThermalEnergy(
+            mass: Double,
+            specificHeat: Double,
+            temperature: Double
+        ) -> Double {
+            mass * specificHeat * temperature
+        }
+    
+        func calculateMassFlowRate(
+            volumetricFlowRate: Double,
+            density: Double
+        ) -> Double {
+            volumetricFlowRate * density
+        }
 }

@@ -26,6 +26,7 @@ flowchart LR
         EnvUC["UpdateEnvironmentUseCase"]
         HeatTransferUC["CalculateHeatTransferUseCase"]
         PumpUC["TogglePumpUseCase"]
+        GetStateUC["GetSystemStateUseCase"]
   end
  subgraph RepoProtocols["Repository Protocols"]
         EnvRepoProto["EnvironmentRepositoryProtocol"]
@@ -51,7 +52,7 @@ flowchart LR
         DataSources
   end
     User(("👤 User")) --> SimView
-    SimVM --> EnvVM & PanelVM & TankVM & StatsVM & EnvUC & PumpUC & HeatTransferUC
+    SimVM --> EnvVM & PanelVM & TankVM & StatsVM & EnvUC & PumpUC & HeatTransferUC & GetStateUC
     EnvView --> EnvVM
     PanelView --> PanelVM
     TankView --> TankVM
@@ -61,6 +62,7 @@ flowchart LR
     EnvUC --> EnvRepoProto
     PumpUC --> StateRepoProto
     HeatTransferUC --> EnvRepoProto & StateRepoProto & ConfigRepoProto & ThermoProto
+    GetStateUC --> EnvRepoProto & StateRepoProto
     EnvRepo --> EnvRepoProto
     StateRepo --> StateRepoProto
     ConfigRepo --> ConfigRepoProto
@@ -83,6 +85,7 @@ flowchart LR
     style EnvUC fill:#121212
     style HeatTransferUC fill:#121212
     style PumpUC fill:#121212
+    style GetStateUC fill:#121212
     style EnvRepoProto fill:#121212
     style StateRepoProto fill:#121212
     style ConfigRepoProto fill:#121212

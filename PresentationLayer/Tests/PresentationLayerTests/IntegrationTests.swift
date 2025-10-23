@@ -214,7 +214,7 @@ struct IntegrationTests {
             environmentRepository: dataFactory.environmentRepository,
             systemStateRepository: dataFactory.systemStateRepository,
             configurationRepository: dataFactory.configurationRepository,
-            thermodynamicsEngine: dataFactory.thermodynamicsEngine
+            thermodynamicsRepository: dataFactory.thermodynamicsRepository
         )
 
         return SimulationViewModel(

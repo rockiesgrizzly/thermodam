@@ -12,7 +12,7 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
     private let environmentRepository: EnvironmentRepositoryProtocol
     private let systemStateRepository: SystemStateRepositoryProtocol
     private let configurationRepository: ConfigurationRepositoryProtocol
-    private let thermodynamicsEngine: ThermodynamicsEngineProtocol
+    private let thermodynamicsRepository: ThermodynamicsRepositoryProtocol
 
     // Assumed fluid volume in the solar panel (liters)
     private let panelFluidVolume: Double = 10.0
@@ -21,12 +21,12 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
         environmentRepository: EnvironmentRepositoryProtocol,
         systemStateRepository: SystemStateRepositoryProtocol,
         configurationRepository: ConfigurationRepositoryProtocol,
-        thermodynamicsEngine: ThermodynamicsEngineProtocol
+        thermodynamicsRepository: ThermodynamicsRepositoryProtocol
     ) {
         self.environmentRepository = environmentRepository
         self.systemStateRepository = systemStateRepository
         self.configurationRepository = configurationRepository
-        self.thermodynamicsEngine = thermodynamicsEngine
+        self.thermodynamicsRepository = thermodynamicsRepository
     }
 
     public func execute(timeStep: Double) async throws {
@@ -42,14 +42,14 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
         let tankMass = tank.volume * config.fluidDensity
 
         // 1. Solar heat gain in panel (W)
-        let solarHeatGain = thermodynamicsEngine.calculateSolarHeatGain(
+        let solarHeatGain = thermodynamicsRepository.calculateSolarHeatGain(
             solarIntensity: environment.solarIntensity,
             surfaceArea: panel.surfaceArea,
             absorptivity: panel.absorptivity
         )
 
         // 2. Heat loss from panel to ambient (W)
-        let panelHeatLoss = thermodynamicsEngine.calculateHeatLoss(
+        let panelHeatLoss = thermodynamicsRepository.calculateHeatLoss(
             heatLossCoefficient: config.panelHeatLossCoefficient,
             surfaceArea: panel.surfaceArea,
             temperatureDifference: panel.temperature - environment.ambientTemperature
@@ -57,19 +57,19 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
 
         // 3. Heat transfer via fluid circulation (W) - only if pump is running
         let massFlowRate = pump.isRunning ?
-            thermodynamicsEngine.calculateMassFlowRate(
+            thermodynamicsRepository.calculateMassFlowRate(
                 volumetricFlowRate: pump.flowRate,
                 density: config.fluidDensity
             ) : 0.0
 
-        let fluidHeatTransfer = thermodynamicsEngine.calculateFluidHeatTransfer(
+        let fluidHeatTransfer = thermodynamicsRepository.calculateFluidHeatTransfer(
             massFlowRate: massFlowRate,
             specificHeat: config.specificHeat,
             temperatureDifference: panel.temperature - tank.temperature
         )
 
         // 4. Heat loss from tank to ambient (W)
-        let tankHeatLoss = thermodynamicsEngine.calculateHeatLoss(
+        let tankHeatLoss = thermodynamicsRepository.calculateHeatLoss(
             heatLossCoefficient: config.tankHeatLossCoefficient,
             surfaceArea: config.tankSurfaceArea,
             temperatureDifference: tank.temperature - environment.ambientTemperature
@@ -80,14 +80,14 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
         let tankNetHeat = fluidHeatTransfer - tankHeatLoss
 
         // 6. Temperature changes (°C or K - same for delta)
-        let panelTempChange = thermodynamicsEngine.calculateTemperatureChange(
+        let panelTempChange = thermodynamicsRepository.calculateTemperatureChange(
             heatPower: panelNetHeat,
             timeStep: timeStep,
             mass: panelMass,
             specificHeat: config.specificHeat
         )
 
-        let tankTempChange = thermodynamicsEngine.calculateTemperatureChange(
+        let tankTempChange = thermodynamicsRepository.calculateTemperatureChange(
             heatPower: tankNetHeat,
             timeStep: timeStep,
             mass: tankMass,
@@ -99,7 +99,7 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
         let newTankTemp = tank.temperature + tankTempChange
 
         // 8. Calculate total energy stored in tank (relative to reference temp of 0°C)
-        let tankEnergy = thermodynamicsEngine.calculateThermalEnergy(
+        let tankEnergy = thermodynamicsRepository.calculateThermalEnergy(
             mass: tankMass,
             specificHeat: config.specificHeat,
             temperature: newTankTemp

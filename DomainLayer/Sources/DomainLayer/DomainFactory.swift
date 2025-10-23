@@ -12,43 +12,43 @@ public final class DomainFactory {
     private let environmentRepository: EnvironmentRepositoryProtocol
     private let systemStateRepository: SystemStateRepositoryProtocol
     private let configurationRepository: ConfigurationRepositoryProtocol
-    private let thermodynamicsEngine: ThermodynamicsEngineProtocol
+    private let thermodynamicsRepository: ThermodynamicsRepositoryProtocol
 
     public init(
         environmentRepository: EnvironmentRepositoryProtocol,
         systemStateRepository: SystemStateRepositoryProtocol,
         configurationRepository: ConfigurationRepositoryProtocol,
-        thermodynamicsEngine: ThermodynamicsEngineProtocol
+        thermodynamicsRepository: ThermodynamicsRepositoryProtocol
     ) {
         self.environmentRepository = environmentRepository
         self.systemStateRepository = systemStateRepository
         self.configurationRepository = configurationRepository
-        self.thermodynamicsEngine = thermodynamicsEngine
+        self.thermodynamicsRepository = thermodynamicsRepository
     }
 
     // MARK: - Use Cases
 
-    public var updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol {
+    public lazy var updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol = {
         UpdateEnvironmentUseCase(environmentRepository: environmentRepository)
-    }
+    }()
 
-    public var togglePumpUseCase: TogglePumpUseCaseProtocol {
+    public lazy var togglePumpUseCase: TogglePumpUseCaseProtocol = {
         TogglePumpUseCase(systemStateRepository: systemStateRepository)
-    }
+    }()
 
-    public var calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol {
+    public lazy var calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol = {
         CalculateHeatTransferUseCase(
             environmentRepository: environmentRepository,
             systemStateRepository: systemStateRepository,
             configurationRepository: configurationRepository,
-            thermodynamicsEngine: thermodynamicsEngine
+            thermodynamicsRepository: thermodynamicsRepository
         )
-    }
+    }()
 
-    public var getSystemStateUseCase: GetSystemStateUseCaseProtocol {
+    public lazy var getSystemStateUseCase: GetSystemStateUseCaseProtocol = {
         GetSystemStateUseCase(
             environmentRepository: environmentRepository,
             systemStateRepository: systemStateRepository
         )
-    }
+    }()
 }

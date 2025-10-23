@@ -7,36 +7,39 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 <img width="1866" src="https://github.com/user-attachments/assets/33c3b834-9482-4db7-8a79-3bbdd205a1a6" />
 
 ### Presentation Layer (Swift Package)
-- **SimulationViewModel**: Main coordinator, holds system state, handles UI interactions
-- **Child ViewModels**: EnvironmentViewModel, SolarPanelViewModel, StorageTankViewModel, StatisticsViewModel
+- **SimulationViewModel**: Main coordinator using `@Observable`, holds system state, handles UI interactions
+- **Child ViewModels**: EnvironmentViewModel, SolarPanelViewModel, StorageTankViewModel, StatisticsViewModel (computed properties for fresh data)
 - **Views**: SimulationView, EnvironmentView, SolarPanelView, StorageTankView, StatisticsView
-- **PresentationFactory**: Creates ViewModels from use cases
+- **PresentationFactory**: Creates ViewModels from use cases (lazy singleton)
+- **Color+Semantic**: Cross-platform semantic colors for light/dark mode support
 
 ### App Layer
 - **thermodamApp**: Main app entry point
-- **AppDependencies**: Composition root that wires all layer factories
+- **AppDependencies**: Composition root with singleton factory instances (prevents duplicate LocalDataSource)
 - Dependency flow: Data → Domain → Presentation
+- All factories use `lazy var` for singleton behavior
 
 ### Domain Layer (Swift Package)
 - **Models**: Environment, SolarPanel, Pump, StorageTank, SystemConfiguration
-- **Use Cases**: UpdateEnvironmentUseCase, TogglePumpUseCase, CalculateHeatTransferUseCase
+- **Use Cases**: UpdateEnvironmentUseCase, TogglePumpUseCase, CalculateHeatTransferUseCase, GetSystemStateUseCase
 - **Repository Protocols**: Define contracts for data access
-- **DomainFactory**: Creates use cases from repository protocols
-- **Tests**: Comprehensive unit tests for all use cases
+- **DomainFactory**: Creates use cases from repository protocols (lazy singletons)
+- **Tests**: 20 comprehensive unit tests for all use cases
 
 ### Data Layer (Swift Package)
 - **Repository Implementations**: EnvironmentRepository, SystemStateRepository, ConfigurationRepository
 - **LocalDataSource**: Thread-safe Actor for in-memory state management
 - **ThermodynamicsEngine**: Pure physics calculations implementing ThermodynamicsEngineProtocol
-- **DataFactory**: Creates repositories and data sources
-- **Tests**: Unit tests for ThermodynamicsEngine formulas
+- **DataFactory**: Creates repositories and data sources (lazy singletons sharing same LocalDataSource)
+- **Tests**: 18 unit tests for ThermodynamicsEngine formulas
 
 ### Architecture Principles
 - **Package isolation**: Each layer is a separate Swift Package with explicit dependencies
 - **Dependency rule**: Dependencies point inward (Domain has no dependencies, Data depends on Domain, Presentation depends on Domain)
 - **Protocol-based**: All cross-layer communication through protocols
-- **Testability**: Mock implementations for all protocols, comprehensive test coverage
+- **Testability**: Mock implementations for all protocols, 45 tests total (20 Domain + 18 Data + 7 Presentation integration tests)
 - **Separation of concerns**: Business logic (Domain), data access (Data), UI (Presentation) clearly separated
+- **Modern Swift**: Uses `@Observable` macro, Actor isolation, async/await, lazy properties
 
 ## General Approach
 
@@ -105,5 +108,44 @@ Formulas based on standard heat transfer and thermodynamics principles:
 - Heat transfer calculations orchestrated by use case, physics delegated to ThermodynamicsEngine
 - Each repository backed by shared Actor for thread-safety
 - Dependency inversion: Domain defines protocols, Data implements them
+
+## How to Run
+
+### Requirements
+- macOS 14.0+
+- Xcode 16.0+
+- Swift 6.0+
+
+### Running the App
+1. Open `thermodam.xcodeproj` in Xcode
+2. Select the thermodam scheme
+3. Run (⌘R)
+
+### Running Tests
+Run all layer tests from the command line:
+```bash
+# Domain Layer tests (20 tests)
+swift test --package-path DomainLayer
+
+# Data Layer tests (18 tests)
+swift test --package-path DataLayer
+
+# Presentation Layer integration tests (7 tests)
+swift test --package-path PresentationLayer
+```
+
+### Using the App
+1. **Drag the sun** vertically to adjust solar intensity (0-1000 W/m²)
+2. **Adjust ambient temperature** slider (5-35°C)
+3. **Toggle pump** on/off to control fluid circulation
+4. **Start simulation** to see real-time heat transfer
+5. Watch temperatures, heat absorption, and energy storage update dynamically
+
+### Key Metrics Displayed
+- **Solar Intensity**: Current irradiance from sun position
+- **Heat Absorbed**: Instantaneous power absorption (W) - not cumulative
+- **Energy Stored**: Cumulative thermal energy in tank (kJ)
+- **Panel/Tank Temperatures**: Real-time thermodynamic calculations
+- **Pump Flow Rate**: Fluid circulation rate when pump is on
 
 

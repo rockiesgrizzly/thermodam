@@ -40,7 +40,7 @@ extension AppDependencies {
         environmentRepository: data.environmentRepository,
         systemStateRepository: data.systemStateRepository,
         configurationRepository: data.configurationRepository,
-        thermodynamicsEngine: data.thermodynamicsEngine
+        thermodynamicsRepository: data.thermodynamicsRepository
     )
 
     /// Presentation is the only layer exposed to the app file. It consumes the domain layer.
