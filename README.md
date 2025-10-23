@@ -89,6 +89,17 @@ Pure calculation functions implementing correct physics formulas:
 
 All formulas tested with real-world values for thermodynamic correctness.
 
+#### References
+Formulas based on standard heat transfer and thermodynamics principles:
+
+1. **Solar Heat Gain & Heat Loss**: Duffie, J.A., & Beckman, W.A. (2013). *Solar Engineering of Thermal Processes* (4th ed.). Wiley. Chapter 6: Flat-Plate Collectors.
+
+2. **Fluid Heat Transfer & Sensible Heat**: Incropera, F.P., Dewitt, D.P., Bergman, T.L., & Lavine, A.S. (2007). *Fundamentals of Heat and Mass Transfer* (6th ed.). Wiley. Chapter 8: Internal Flow.
+
+3. **First Law of Thermodynamics (Temperature Change & Thermal Energy)**: Çengel, Y.A., & Boles, M.A. (2015). *Thermodynamics: An Engineering Approach* (8th ed.). McGraw-Hill. Chapter 4: Energy Analysis of Closed Systems.
+
+4. **Mass Flow Rate**: White, F.M. (2011). *Fluid Mechanics* (7th ed.). McGraw-Hill. Chapter 4: Fluid Kinematics.
+
 ### Design Goals
 - Environment, solar, pump, and tank updates occur independently
 - Heat transfer calculations orchestrated by use case, physics delegated to ThermodynamicsEngine

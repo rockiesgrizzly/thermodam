@@ -31,7 +31,7 @@ final class AppDependencies {
 
 extension AppDependencies {
     /// Presentation is the only layer exposed to the app file. It consumes the domain layer.
-    var presentation: PresentationFactory {
+    static var presentation: PresentationFactory {
         PresentationFactory(
             updateEnvironmentUseCase: domain.updateEnvironmentUseCase,
             togglePumpUseCase: domain.togglePumpUseCase,
@@ -40,7 +40,7 @@ extension AppDependencies {
     }
     
     /// Domain layer consumes the data layer. It's consumed by the presentation layer above.
-    private var domain: DomainFactory {
+    private static var domain: DomainFactory {
         DomainFactory(
             environmentRepository: data.environmentRepository,
             systemStateRepository: data.systemStateRepository,
@@ -50,7 +50,7 @@ extension AppDependencies {
     }
     
     /// Being the outermost layer, data does not consume any layers. It's consumed by the domain layer above.
-    private var data: DataFactory {
+    private static var data: DataFactory {
         DataFactory()
     }
 }
