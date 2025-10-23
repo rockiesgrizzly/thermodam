@@ -21,7 +21,7 @@ public struct SolarPanelView: View {
             panelInfo
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.secondaryBackground)
         .cornerRadius(12)
     }
 
@@ -77,7 +77,7 @@ public struct SolarPanelView: View {
                     .foregroundStyle(temperatureColor)
                 Text(viewModel.temperatureText)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryLabel)
             }
 
             HStack {
@@ -85,7 +85,7 @@ public struct SolarPanelView: View {
                     .foregroundStyle(.orange)
                 Text(viewModel.heatAbsorptionText)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryLabel)
             }
 
             HStack {
@@ -93,7 +93,7 @@ public struct SolarPanelView: View {
                     .foregroundStyle(.green)
                 Text(viewModel.efficiencyText)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryLabel)
             }
         }
     }

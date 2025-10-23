@@ -30,27 +30,25 @@ final class AppDependencies {
 // MARK: - Factory Adapters
 
 extension AppDependencies {
-    /// Presentation is the only layer exposed to the app file. It consumes the domain layer.
-    static var presentation: PresentationFactory {
-        PresentationFactory(
-            updateEnvironmentUseCase: domain.updateEnvironmentUseCase,
-            togglePumpUseCase: domain.togglePumpUseCase,
-            calculateHeatTransferUseCase: domain.calculateHeatTransferUseCase
-        )
-    }
-    
-    /// Domain layer consumes the data layer. It's consumed by the presentation layer above.
-    private static var domain: DomainFactory {
-        DomainFactory(
-            environmentRepository: data.environmentRepository,
-            systemStateRepository: data.systemStateRepository,
-            configurationRepository: data.configurationRepository,
-            thermodynamicsEngine: data.thermodynamicsEngine
-        )
-    }
-    
     /// Being the outermost layer, data does not consume any layers. It's consumed by the domain layer above.
-    private static var data: DataFactory {
-        DataFactory()
-    }
+    /// Singleton instance to maintain state across app lifecycle.
+    private static let data = DataFactory()
+
+    /// Domain layer consumes the data layer. It's consumed by the presentation layer above.
+    /// Singleton instance that uses the shared data factory.
+    private static let domain = DomainFactory(
+        environmentRepository: data.environmentRepository,
+        systemStateRepository: data.systemStateRepository,
+        configurationRepository: data.configurationRepository,
+        thermodynamicsEngine: data.thermodynamicsEngine
+    )
+
+    /// Presentation is the only layer exposed to the app file. It consumes the domain layer.
+    /// Singleton instance that uses the shared domain factory.
+    static let presentation = PresentationFactory(
+        updateEnvironmentUseCase: domain.updateEnvironmentUseCase,
+        togglePumpUseCase: domain.togglePumpUseCase,
+        calculateHeatTransferUseCase: domain.calculateHeatTransferUseCase,
+        getSystemStateUseCase: domain.getSystemStateUseCase
+    )
 }

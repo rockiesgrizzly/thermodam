@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "PresentationLayer",
     platforms: [
-        .iOS(.v26)
+        .iOS(.v26),
+        .macOS(.v14)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -16,6 +17,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(path: "../DataLayer"), // Consumed only by testing for integration/end-to-end
         .package(path: "../DomainLayer")
     ],
     targets: [
@@ -23,7 +25,8 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "PresentationLayer",
-            dependencies: ["DomainLayer"]
+            dependencies: ["DataLayer", // Consumed only by testing for integration/end-to-end
+                           "DomainLayer"]
         ),
         .testTarget(
             name: "PresentationLayerTests",

@@ -9,7 +9,9 @@ import DomainLayer
 import Foundation
 
 /// Presentation : ViewModel : formats statistics data for StatisticsView
-public struct StatisticsViewModel {
+@Observable
+@MainActor
+public final class StatisticsViewModel {
     public let panelTemperature: Double
     public let tankTemperature: Double
     public let heatAbsorbed: Double

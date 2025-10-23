@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct SimulationView: View {
-    @State var viewModel: SimulationViewModel
+    var viewModel: SimulationViewModel
 
     public init(viewModel: SimulationViewModel) {
         self.viewModel = viewModel
@@ -35,10 +35,10 @@ public struct SimulationView: View {
                         .padding()
                 }
                 .frame(height: geometry.size.height * 0.33)
-                .background(Color(.secondarySystemBackground))
+                .background(Color.secondaryBackground)
             }
         }
-        .background(Color(.systemBackground))
+        .background(Color.systemBackground)
         .ignoresSafeArea(edges: .bottom)
     }
 
@@ -47,16 +47,17 @@ public struct SimulationView: View {
     @ViewBuilder
     private var controlBar: some View {
         HStack {
-            Text("Solar Thermal Simulation")
+            Text("Solar Thermal Sim")
                 .font(.title2)
                 .fontWeight(.semibold)
+                .foregroundStyle(Color.label)
 
             Spacer()
 
             playPauseButton
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.secondaryBackground)
         .cornerRadius(12)
     }
 
@@ -149,7 +150,7 @@ public struct SimulationView: View {
             Spacer()
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.secondaryBackground)
         .cornerRadius(12)
     }
 
@@ -162,7 +163,8 @@ import DomainLayer // only used for preview setup purposes
         viewModel: SimulationViewModel(
             updateEnvironmentUseCase: PreviewMocks.updateEnvironmentUseCase,
             togglePumpUseCase: PreviewMocks.togglePumpUseCase,
-            calculateHeatTransferUseCase: PreviewMocks.calculateHeatTransferUseCase
+            calculateHeatTransferUseCase: PreviewMocks.calculateHeatTransferUseCase,
+            getSystemStateUseCase: PreviewMocks.getSystemStateUseCase
         )
     )
 }
@@ -173,6 +175,7 @@ private enum PreviewMocks {
     static let updateEnvironmentUseCase = MockUpdateEnvironmentUseCase()
     static let togglePumpUseCase = MockTogglePumpUseCase()
     static let calculateHeatTransferUseCase = MockCalculateHeatTransferUseCase()
+    static let getSystemStateUseCase = MockGetSystemStateUseCase()
 }
 
 private final class MockUpdateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol {
@@ -185,4 +188,17 @@ private final class MockTogglePumpUseCase: TogglePumpUseCaseProtocol {
 
 private final class MockCalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol {
     func execute(timeStep: Double) async throws {}
+}
+
+private final class MockGetSystemStateUseCase: GetSystemStateUseCaseProtocol {
+    var systemState: SystemState {
+        get async throws {
+            SystemState(
+                environment: Environment(),
+                solarPanel: SolarPanel(),
+                pump: Pump(),
+                storageTank: StorageTank()
+            )
+        }
+    }
 }

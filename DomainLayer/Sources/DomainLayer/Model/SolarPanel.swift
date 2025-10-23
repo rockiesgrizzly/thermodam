@@ -27,7 +27,7 @@ public struct SolarPanel: Sendable {
         temperature: Double = 20.0,           // °C - starting at ambient
         surfaceArea: Double = 2.0,            // m² - typical residential panel
         absorptivity: Double = 0.92,          // ~92% absorption efficiency
-        heatAbsorptionRate: Double = 0.0      // W - no heat yet
+        heatAbsorptionRate: Double = 736.0    // W - initial heat with 400 W/m² solar intensity
     ) {
         self.temperature = temperature
         self.surfaceArea = surfaceArea

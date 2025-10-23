@@ -21,7 +21,7 @@ public struct StorageTankView: View {
             tankInfo
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.secondaryBackground)
         .cornerRadius(12)
     }
 
@@ -78,7 +78,7 @@ public struct StorageTankView: View {
                     .foregroundStyle(temperatureColor)
                 Text(viewModel.temperatureText)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryLabel)
             }
 
             HStack {
@@ -86,7 +86,7 @@ public struct StorageTankView: View {
                     .foregroundStyle(.blue)
                 Text(viewModel.volumeText)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryLabel)
             }
 
             HStack {
@@ -94,7 +94,7 @@ public struct StorageTankView: View {
                     .foregroundStyle(.yellow)
                 Text(viewModel.energyStoredText)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryLabel)
             }
         }
     }

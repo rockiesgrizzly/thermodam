@@ -44,4 +44,11 @@ public final class DomainFactory {
             thermodynamicsEngine: thermodynamicsEngine
         )
     }
+
+    public var getSystemStateUseCase: GetSystemStateUseCaseProtocol {
+        GetSystemStateUseCase(
+            environmentRepository: environmentRepository,
+            systemStateRepository: systemStateRepository
+        )
+    }
 }

@@ -19,7 +19,7 @@ public struct StatisticsView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("System Statistics")
                 .font(.headline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.label)
 
             VStack(alignment: .leading, spacing: 12) {
                 temperatureMetrics
@@ -34,7 +34,7 @@ public struct StatisticsView: View {
             }
         }
         .padding()
-        .background(Color(.secondarySystemBackground))
+        .background(Color.secondaryBackground)
         .cornerRadius(12)
     }
 
@@ -97,19 +97,19 @@ public struct StatisticsView: View {
             HStack {
                 Text(label)
                     .font(.subheadline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.label)
 
                 Spacer()
 
                 Text(value)
                     .font(.subheadline.monospacedDigit())
                     .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Color.label)
             }
 
             Text(caption)
                 .font(.caption2)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(Color.tertiaryLabel)
         }
     }
 }

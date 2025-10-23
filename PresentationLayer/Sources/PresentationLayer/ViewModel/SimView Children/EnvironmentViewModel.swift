@@ -9,7 +9,9 @@ import DomainLayer
 import Foundation
 
 /// Presentation : ViewModel : formats environment data for EnvironmentView
-public struct EnvironmentViewModel {
+@Observable
+@MainActor
+public final class EnvironmentViewModel {
     public let solarIntensity: Double
     public let ambientTemperature: Double
     public let sunPosition: CGPoint

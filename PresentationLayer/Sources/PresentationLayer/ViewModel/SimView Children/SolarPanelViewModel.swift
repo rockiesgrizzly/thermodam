@@ -9,7 +9,9 @@ import DomainLayer
 import Foundation
 
 /// Presentation : ViewModel : formats solar panel data for SolarPanelView
-public struct SolarPanelViewModel {
+@Observable
+@MainActor
+public final class SolarPanelViewModel {
     public let temperature: Double
     public let heatAbsorptionRate: Double
     public let surfaceArea: Double

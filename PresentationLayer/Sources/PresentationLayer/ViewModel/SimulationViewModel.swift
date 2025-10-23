@@ -16,6 +16,7 @@ public final class SimulationViewModel {
     private let updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol
     private let togglePumpUseCase: TogglePumpUseCaseProtocol
     private let calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
+    private let getSystemStateUseCase: GetSystemStateUseCaseProtocol
 
     // State
     public var environment: Environment
@@ -31,11 +32,13 @@ public final class SimulationViewModel {
     public init(
         updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol,
         togglePumpUseCase: TogglePumpUseCaseProtocol,
-        calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
+        calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol,
+        getSystemStateUseCase: GetSystemStateUseCaseProtocol
     ) {
         self.updateEnvironmentUseCase = updateEnvironmentUseCase
         self.togglePumpUseCase = togglePumpUseCase
         self.calculateHeatTransferUseCase = calculateHeatTransferUseCase
+        self.getSystemStateUseCase = getSystemStateUseCase
 
         self.environment = Environment()
         self.solarPanel = SolarPanel()
@@ -69,7 +72,8 @@ public final class SimulationViewModel {
     public func respondToPumpToggle() async {
         do {
             try await togglePumpUseCase.execute()
-            pump = Pump(isRunning: !pump.isRunning, flowRate: pump.flowRate)
+            // Refresh entire state to ensure consistency
+            try await refreshState()
         } catch {
             print("Error toggling pump: \(error)")
         }
@@ -149,9 +153,18 @@ public final class SimulationViewModel {
     private func runSimulationStep() async {
         do {
             try await calculateHeatTransferUseCase.execute(timeStep: timeStep)
-            // TODO: Poll repositories for updated state
+            try await refreshState()
         } catch {
             print("Error in simulation step: \(error)")
         }
+    }
+
+    private func refreshState() async throws {
+        // Poll repositories for updated state
+        let systemState = try await getSystemStateUseCase.systemState
+        self.environment = systemState.environment
+        self.solarPanel = systemState.solarPanel
+        self.pump = systemState.pump
+        self.storageTank = systemState.storageTank
     }
 }

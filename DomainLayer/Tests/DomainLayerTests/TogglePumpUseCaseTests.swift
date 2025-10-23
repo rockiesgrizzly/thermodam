@@ -83,6 +83,8 @@ struct TogglePumpUseCaseTests {
 
 final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked Sendable {
     private var _pump: Pump
+    private var _solarPanel: SolarPanel
+    private var _storageTank: StorageTank
     private let shouldThrowError: Bool
 
     var updatePumpCallCount = 0
@@ -95,6 +97,8 @@ final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked
         shouldThrowError: Bool = false
     ) {
         self._pump = pump
+        self._solarPanel = solarPanel
+        self._storageTank = storageTank
         self.shouldThrowError = shouldThrowError
     }
 
@@ -106,11 +110,17 @@ final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked
     }
 
     var solarPanel: SolarPanel {
-        get async throws { SolarPanel() }
+        get async throws {
+            if shouldThrowError { throw MockError.repositoryError }
+            return _solarPanel
+        }
     }
 
     var storageTank: StorageTank {
-        get async throws { StorageTank() }
+        get async throws {
+            if shouldThrowError { throw MockError.repositoryError }
+            return _storageTank
+        }
     }
 
     func updatePump(_ pump: Pump) async throws {

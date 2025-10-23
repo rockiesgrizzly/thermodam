@@ -9,7 +9,9 @@ import DomainLayer
 import Foundation
 
 /// Presentation : ViewModel : formats storage tank data for StorageTankView
-public struct StorageTankViewModel {
+@Observable
+@MainActor
+public final class StorageTankViewModel {
     public let temperature: Double
     public let volume: Double
     public let energyStored: Double

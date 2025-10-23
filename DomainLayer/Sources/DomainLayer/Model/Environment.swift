@@ -20,7 +20,7 @@ public struct Environment: Sendable {
     public let sunPosition: CGPoint
 
     public init(
-        solarIntensity: Double = 800.0,      // W/m² - bright sunny day
+        solarIntensity: Double = 400.0,      // W/m² - sun at mid-lower position
         ambientTemperature: Double = 20.0,   // °C - comfortable room temp
         sunPosition: CGPoint = CGPoint(x: 100, y: 100)
     ) {

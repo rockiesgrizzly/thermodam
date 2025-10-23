@@ -18,14 +18,19 @@ public struct EnvironmentView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 16) {
+        HStack(spacing: 16) {
             sunArea
             controls
         }
         .padding()
         .background(
             LinearGradient(
-                colors: [Color.blue.opacity(0.1), Color.cyan.opacity(0.05)],
+                colors: [
+                    Color.blue.opacity(0.6),
+                    Color.blue.opacity(0.4),
+                    Color.blue.opacity(0.2),
+                    Color.primary.opacity(0.1)
+                ],
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -39,19 +44,28 @@ public struct EnvironmentView: View {
     private var sunArea: some View {
         GeometryReader { geometry in
             ZStack {
+                // Vertical slider track
+                Rectangle()
+                    .fill(Color.primary.opacity(0.15))
+                    .frame(width: 2)
+                    .cornerRadius(1)
+
                 // Draggable sun
                 Image(systemName: "sun.max.fill")
-                    .font(.system(size: 60))
+                    .font(.system(size: 30))
                     .foregroundStyle(.yellow)
                     .shadow(color: .yellow.opacity(0.5), radius: 10)
-                    .position(sunPosition)
+                    .position(
+                        x: geometry.size.width / 2,
+                        y: sunPosition.y == 0 ? geometry.size.height / 2 : sunPosition.y
+                    )
                     .gesture(
                         DragGesture()
                             .onChanged { value in
-                                // Constrain sun to bounds
-                                let newX = min(max(value.location.x, 30), geometry.size.width - 30)
-                                let newY = min(max(value.location.y, 30), geometry.size.height - 30)
-                                sunPosition = CGPoint(x: newX, y: newY)
+                                // Keep X centered, only allow vertical movement
+                                let centerX = geometry.size.width / 2
+                                let newY = min(max(value.location.y, 15), geometry.size.height - 15)
+                                sunPosition = CGPoint(x: centerX, y: newY)
                             }
                             .onEnded { value in
                                 // Calculate solar intensity based on vertical position
@@ -69,15 +83,17 @@ public struct EnvironmentView: View {
                 ForEach(0..<8) { index in
                     Rectangle()
                         .fill(Color.yellow.opacity(0.3))
-                        .frame(width: 2, height: 15)
-                        .offset(y: -40)
+                        .frame(width: 2, height: 2)
+                        .offset(y: -10)
                         .rotationEffect(.degrees(Double(index) * 45))
-                        .position(sunPosition)
+                        .position(
+                            x: geometry.size.width / 2,
+                            y: sunPosition.y == 0 ? geometry.size.height / 2 : sunPosition.y
+                        )
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(height: 150)
+        .frame(width: 30, height: 150)
     }
 
     @ViewBuilder
@@ -89,7 +105,7 @@ public struct EnvironmentView: View {
                     .foregroundStyle(.orange)
                 Text(viewModel.solarIntensityText)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.secondaryLabel)
             }
 
             Divider()
@@ -101,13 +117,13 @@ public struct EnvironmentView: View {
                         .foregroundStyle(.blue)
                     Text(viewModel.ambientTemperatureText)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.secondaryLabel)
                 }
 
                 HStack {
                     Text("5°C")
                         .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(Color.tertiaryLabel)
 
                     Slider(
                         value: Binding(
@@ -124,10 +140,10 @@ public struct EnvironmentView: View {
 
                     Text("35°C")
                         .font(.caption2)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(Color.tertiaryLabel)
                 }
             }
-        }
+        }.frame(maxWidth: .infinity)
     }
 }
 

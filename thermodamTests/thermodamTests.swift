@@ -10,8 +10,6 @@ import Testing
 
 struct thermodamTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    }
+    // NOTE: The AppLayer is quite light, so all test happen at the other layers. See DataLayer, DomainLayer, & PresentationLayer for more.
 
 }
