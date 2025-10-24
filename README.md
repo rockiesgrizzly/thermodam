@@ -2,9 +2,15 @@
 
 An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics. There's a bit of intentional over-engineering here to demonstrate a system to could be extended to production quality quickly.
 
+## App in Action
+https://github.com/user-attachments/assets/49b05796-8822-4b43-8ace-27c026ad4a95
+
+https://github.com/user-attachments/assets/c903caa0-3454-4667-a0c5-a5ba591e80d0
+
 ## Architecture
 _The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers._
-<img width="1407" alt="Screenshot 2025-10-23 at 5 58 26 PM" src="https://github.com/user-attachments/assets/0656ee43-4cee-46f8-9ad5-646572507950" />
+<img width="1735" alt="architecture" src="https://github.com/user-attachments/assets/d3813a8b-53a7-4bb4-81cd-eeca060d766a" />
+
 
 ### Presentation Layer (Swift Package)
 - **SimulationViewModel**: Main coordinator using `@Observable`, holds system state, handles UI interactions
