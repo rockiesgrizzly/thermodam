@@ -21,22 +21,20 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 ### App Layer
 - **thermodamApp**: Main app entry point
 - **AppDependencies**: Composition root with singleton factory instances (prevents duplicate LocalDataSource)
-- Dependency flow: Data → Domain → Presentation
-- All factories use `lazy var` for singleton behavior
 
 ### Domain Layer (Swift Package)
 - **Models**: Environment, SolarPanel, Pump, StorageTank, SystemConfiguration
 - **Use Cases**: UpdateEnvironmentUseCase, TogglePumpUseCase, CalculateHeatTransferUseCase, GetSystemStateUseCase
 - **Repository Protocols**: Define contracts for data access
 - **DomainFactory**: Creates use cases from repository protocols (lazy singletons)
-- **Tests**: 20 comprehensive unit tests for all use cases
+- **Tests**: comprehensive unit tests for all use cases
 
 ### Data Layer (Swift Package)
 - **Repository Implementations**: EnvironmentRepository, SystemStateRepository, ConfigurationRepository
 - **LocalDataSource**: Thread-safe Actor for in-memory state management
 - **ThermodynamicsEngine**: Pure physics calculations implementing ThermodynamicsEngineProtocol
 - **DataFactory**: Creates repositories and data sources (lazy singletons sharing same LocalDataSource)
-- **Tests**: 18 unit tests for ThermodynamicsEngine formulas
+- **Tests**: unit tests for ThermodynamicsEngine formulas
 
 ### Architecture Principles
 - **Package isolation**: Each layer is a separate Swift Package with explicit dependencies
