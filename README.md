@@ -1,6 +1,6 @@
-# ThermoDam App
+# Thermodam App
 
-An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics. There's a bit of intentional over-engineering here to demonstrate a system that could be extended to production quality quickly.
+An example iOS app showing a **simple solar thermal simulation** of the heat transfer from a solar panel to a storage tank with attention to thermodynamics. There's a bit of intentional over-engineering here to demonstrate a system that could be extended to production quality quickly.
 
 ## App in Action
 https://github.com/user-attachments/assets/49b05796-8822-4b43-8ace-27c026ad4a95
