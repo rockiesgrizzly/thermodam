@@ -40,7 +40,10 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 - **Package isolation**: Each layer is a separate Swift Package with explicit dependencies
 - **Dependency rule**: Dependencies point inward (Domain has no dependencies, Data depends on Domain, Presentation depends on Domain)
 - **Protocol-based**: All cross-layer communication through protocols
-- **Testability**: Mock implementations for all protocols, 45 tests total (20 Domain + 18 Data + 7 Presentation integration tests)
+- **Testability**: Mock implementations for all protocols, 45 tests total:
+  - 20 Domain tests (GetSystemState: 3, CalculateHeatTransfer: 7, TogglePump: 5, UpdateEnvironment: 5)
+  - 18 Data tests (ThermodynamicsEngine formulas)
+  - 7 Presentation integration tests
 - **Separation of concerns**: Business logic (Domain), data access (Data), UI (Presentation) clearly separated
 - **Modern Swift**: Uses `@Observable` macro, Actor isolation, async/await, lazy properties
 
@@ -73,6 +76,11 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 **TogglePumpUseCase**:
 - Writes: pump on/off, flow rate
 - Reads: current pump state
+
+**GetSystemStateUseCase**:
+- Reads: environment state, component states (all repositories)
+- Writes: nothing (read-only query)
+- Returns: complete SystemState snapshot
 
 ### Data Handling
 **Repositories**:
@@ -118,7 +126,7 @@ Formulas based on standard heat transfer and thermodynamics principles:
 ### Requirements
 - macOS 14.0+
 - Xcode 16.0+
-- Swift 6.0+
+- Swift 6.2+
 
 ### Running the App
 1. Open `thermodam.xcodeproj` in Xcode
