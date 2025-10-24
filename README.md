@@ -1,10 +1,15 @@
 # ThermoDam App
 
-An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics
+An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics. There's a bit of intentional over-engineering here to demonstrate a system that could be extended to production quality quickly.
+
+## App in Action
+https://github.com/user-attachments/assets/49b05796-8822-4b43-8ace-27c026ad4a95
+
+https://github.com/user-attachments/assets/c903caa0-3454-4667-a0c5-a5ba591e80d0
 
 ## Architecture
 _The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers._
-<img width="1866" src="https://github.com/user-attachments/assets/33c3b834-9482-4db7-8a79-3bbdd205a1a6" />
+<img width="1403" height="298" alt="Thermodam Architecture : Clean Swift approach" src="https://github.com/user-attachments/assets/f9978631-d512-4bc0-ace8-a1716a751f64" />
 
 ### Presentation Layer (Swift Package)
 - **SimulationViewModel**: Main coordinator using `@Observable`, holds system state, handles UI interactions
@@ -16,28 +21,29 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 ### App Layer
 - **thermodamApp**: Main app entry point
 - **AppDependencies**: Composition root with singleton factory instances (prevents duplicate LocalDataSource)
-- Dependency flow: Data → Domain → Presentation
-- All factories use `lazy var` for singleton behavior
 
 ### Domain Layer (Swift Package)
 - **Models**: Environment, SolarPanel, Pump, StorageTank, SystemConfiguration
 - **Use Cases**: UpdateEnvironmentUseCase, TogglePumpUseCase, CalculateHeatTransferUseCase, GetSystemStateUseCase
 - **Repository Protocols**: Define contracts for data access
 - **DomainFactory**: Creates use cases from repository protocols (lazy singletons)
-- **Tests**: 20 comprehensive unit tests for all use cases
+- **Tests**: comprehensive unit tests for all use cases
 
 ### Data Layer (Swift Package)
 - **Repository Implementations**: EnvironmentRepository, SystemStateRepository, ConfigurationRepository
 - **LocalDataSource**: Thread-safe Actor for in-memory state management
 - **ThermodynamicsEngine**: Pure physics calculations implementing ThermodynamicsEngineProtocol
 - **DataFactory**: Creates repositories and data sources (lazy singletons sharing same LocalDataSource)
-- **Tests**: 18 unit tests for ThermodynamicsEngine formulas
+- **Tests**: unit tests for ThermodynamicsEngine formulas
 
 ### Architecture Principles
 - **Package isolation**: Each layer is a separate Swift Package with explicit dependencies
 - **Dependency rule**: Dependencies point inward (Domain has no dependencies, Data depends on Domain, Presentation depends on Domain)
 - **Protocol-based**: All cross-layer communication through protocols
-- **Testability**: Mock implementations for all protocols, 45 tests total (20 Domain + 18 Data + 7 Presentation integration tests)
+- **Testability**: Mock implementations for all protocols, 45 tests total:
+  - 20 Domain tests (GetSystemState: 3, CalculateHeatTransfer: 7, TogglePump: 5, UpdateEnvironment: 5)
+  - 18 Data tests (ThermodynamicsEngine formulas)
+  - 7 Presentation integration tests
 - **Separation of concerns**: Business logic (Domain), data access (Data), UI (Presentation) clearly separated
 - **Modern Swift**: Uses `@Observable` macro, Actor isolation, async/await, lazy properties
 
@@ -71,17 +77,23 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 - Writes: pump on/off, flow rate
 - Reads: current pump state
 
+**GetSystemStateUseCase**:
+- Reads: environment state, component states (all repositories)
+- Writes: nothing (read-only query)
+- Returns: complete SystemState snapshot
+
 ### Data Handling
 **Repositories**:
 - **EnvironmentRepository**: Manages environment state (sun position, solar intensity, ambient temp)
 - **SystemStateRepository**: Manages component states (panel/tank temperatures, pump status, flow rates, energy)
 - **ConfigurationRepository**: Provides system constants (specific heat, fluid density, heat loss coefficients, surface areas)
+- **ThermodynamicsRepository**: Provides access to the ThermodynamicEngine
 
 **Data Sources**:
 - **LocalDataSource**: Thread-safe Actor for in-memory state management
-- **ThermodynamicsEngine**: Stateless physics calculation engine
+- **ThermodynamicsEngine**: Stateless physics calculation engine. Simulates an endpoint that might provide more complex calculations.
 
-### Thermodynamics Engine
+### Thermodynamics Engine (simulates an endpoint that might provide more complex calculations)
 Pure calculation functions implementing correct physics formulas:
 - **Solar Heat Gain**: Q = I × A × α (irradiance × area × absorptivity)
 - **Heat Loss**: Q_loss = U × A × ΔT (heat transfer coefficient × area × temp difference)
@@ -114,7 +126,7 @@ Formulas based on standard heat transfer and thermodynamics principles:
 ### Requirements
 - macOS 14.0+
 - Xcode 16.0+
-- Swift 6.0+
+- Swift 6.2+
 
 ### Running the App
 1. Open `thermodam.xcodeproj` in Xcode
