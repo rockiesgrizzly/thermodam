@@ -86,4 +86,3 @@ public struct ThermodynamicsEngine: ThermodynamicsEngineProtocol {
         volumetricFlowRate * density
     }
 }
-

@@ -14,7 +14,7 @@ let package = Package(
         .library(
             name: "DataLayer",
             targets: ["DataLayer"]
-        ),
+        )
     ],
     dependencies: [
         .package(path: "../DomainLayer")
@@ -29,6 +29,6 @@ let package = Package(
         .testTarget(
             name: "DataLayerTests",
             dependencies: ["DataLayer"]
-        ),
+        )
     ]
 )

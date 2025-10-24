@@ -304,7 +304,7 @@ final class MockConfigurationRepo: ConfigurationRepositoryProtocol, @unchecked S
     }
 }
 
-final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {    
+final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {
     func calculateSolarHeatGain(
             solarIntensity: Double,
             surfaceArea: Double,
@@ -312,7 +312,7 @@ final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {
         ) -> Double {
             solarIntensity * surfaceArea * absorptivity
         }
-    
+
         func calculateHeatLoss(
             heatLossCoefficient: Double,
             surfaceArea: Double,
@@ -320,7 +320,7 @@ final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {
         ) -> Double {
             heatLossCoefficient * surfaceArea * temperatureDifference
         }
-    
+
         func calculateFluidHeatTransfer(
             massFlowRate: Double,
             specificHeat: Double,
@@ -328,7 +328,7 @@ final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {
         ) -> Double {
             massFlowRate * specificHeat * temperatureDifference
         }
-    
+
         func calculateTemperatureChange(
             heatPower: Double,
             timeStep: Double,
@@ -338,7 +338,7 @@ final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {
             guard mass > 0, specificHeat > 0 else { return 0 }
             return (heatPower * timeStep) / (mass * specificHeat)
         }
-    
+
         func calculateThermalEnergy(
             mass: Double,
             specificHeat: Double,
@@ -346,7 +346,7 @@ final class MockThermodynamicsRepo: ThermodynamicsRepositoryProtocol {
         ) -> Double {
             mass * specificHeat * temperature
         }
-    
+
         func calculateMassFlowRate(
             volumetricFlowRate: Double,
             density: Double

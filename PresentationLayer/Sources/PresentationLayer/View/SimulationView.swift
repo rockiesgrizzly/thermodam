@@ -85,14 +85,14 @@ public struct SimulationView: View {
             VStack(spacing: 12) {
                 // Environment with draggable sun
                 EnvironmentView(viewModel: viewModel.environmentViewModel)
-                
+
                 HStack {
                     SolarPanelView(viewModel: viewModel.solarPanelViewModel)
-                    
+
                     // Pump control (centered, compact)
                     compactPumpControl
                 }
-                
+
                 StorageTankView(viewModel: viewModel.storageTankViewModel)
             }
             .padding(.horizontal)

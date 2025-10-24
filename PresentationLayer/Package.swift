@@ -14,7 +14,7 @@ let package = Package(
         .library(
             name: "PresentationLayer",
             targets: ["PresentationLayer"]
-        ),
+        )
     ],
     dependencies: [
         .package(path: "../DataLayer"), // Consumed only by testing for integration/end-to-end
@@ -31,6 +31,6 @@ let package = Package(
             name: "PresentationLayerTests",
             dependencies: ["DataLayer", // Consumed only by testing for integration/end-to-end,
                            "PresentationLayer"]
-        ),
+        )
     ]
 )

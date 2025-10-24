@@ -67,7 +67,7 @@ public struct EnvironmentView: View {
                                 let newY = min(max(value.location.y, 15), geometry.size.height - 15)
                                 sunPosition = CGPoint(x: centerX, y: newY)
                             }
-                            .onEnded { value in
+                            .onEnded { _ in
                                 // Calculate solar intensity based on vertical position
                                 // Higher position = more intensity (0-1000 W/m²)
                                 let normalizedY = 1.0 - (sunPosition.y / geometry.size.height)
