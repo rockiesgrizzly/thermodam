@@ -1,10 +1,10 @@
 # ThermoDam App
 
-An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics
+An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics.
 
 ## Architecture
 _The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers._
-<img width="1866" src="https://github.com/user-attachments/assets/33c3b834-9482-4db7-8a79-3bbdd205a1a6" />
+<img width="1407" alt="Screenshot 2025-10-23 at 5 58 26 PM" src="https://github.com/user-attachments/assets/0656ee43-4cee-46f8-9ad5-646572507950" />
 
 ### Presentation Layer (Swift Package)
 - **SimulationViewModel**: Main coordinator using `@Observable`, holds system state, handles UI interactions
@@ -76,12 +76,13 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 - **EnvironmentRepository**: Manages environment state (sun position, solar intensity, ambient temp)
 - **SystemStateRepository**: Manages component states (panel/tank temperatures, pump status, flow rates, energy)
 - **ConfigurationRepository**: Provides system constants (specific heat, fluid density, heat loss coefficients, surface areas)
+- **ThermodynamicsRepository**: Provides access to the ThermodynamicEngine
 
 **Data Sources**:
 - **LocalDataSource**: Thread-safe Actor for in-memory state management
-- **ThermodynamicsEngine**: Stateless physics calculation engine
+- **ThermodynamicsEngine**: Stateless physics calculation engine. Simulates an endpoint that might provide more complex calculations.
 
-### Thermodynamics Engine
+### Thermodynamics Engine (simulates an endpoint that might provide more complex calculations)
 Pure calculation functions implementing correct physics formulas:
 - **Solar Heat Gain**: Q = I × A × α (irradiance × area × absorptivity)
 - **Heat Loss**: Q_loss = U × A × ΔT (heat transfer coefficient × area × temp difference)
