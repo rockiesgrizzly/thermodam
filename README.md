@@ -9,8 +9,7 @@ https://github.com/user-attachments/assets/c903caa0-3454-4667-a0c5-a5ba591e80d0
 
 ## Architecture
 _The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers._
-<img width="1735" alt="architecture" src="https://github.com/user-attachments/assets/d3813a8b-53a7-4bb4-81cd-eeca060d766a" />
-
+<img width="1403" height="298" alt="Thermodam Architecture : Clean Swift approach" src="https://github.com/user-attachments/assets/f9978631-d512-4bc0-ace8-a1716a751f64" />
 
 ### Presentation Layer (Swift Package)
 - **SimulationViewModel**: Main coordinator using `@Observable`, holds system state, handles UI interactions
