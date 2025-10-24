@@ -25,12 +25,12 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "PresentationLayer",
-            dependencies: ["DataLayer", // Consumed only by testing for integration/end-to-end
-                           "DomainLayer"]
+            dependencies: ["DomainLayer"]
         ),
         .testTarget(
             name: "PresentationLayerTests",
-            dependencies: ["PresentationLayer"]
+            dependencies: ["DataLayer", // Consumed only by testing for integration/end-to-end,
+                           "PresentationLayer"]
         ),
     ]
 )
