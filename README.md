@@ -125,8 +125,8 @@ Formulas based on standard heat transfer and thermodynamics principles:
 
 ### Requirements
 - macOS 14.0+
-- Xcode 16.0+
-- Swift 6.2+
+- Xcode 18.0+
+- Swift 6.1+
 
 ### Running the App
 1. Open `thermodam.xcodeproj` in Xcode
