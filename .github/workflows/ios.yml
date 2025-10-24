@@ -17,7 +17,7 @@ jobs:
       - name: Build and Test iOS App
         run: |
           device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
-          xcodebuild test -scheme thermodam -project thermodam.xcodeproj -destination "platform=iOS Simulator,name=$device" -testPlan thermodam -skip-testing:thermodamUITests
+          xcodebuild test -scheme thermodam -project thermodam.xcodeproj -destination "platform=iOS Simulator,name=$device"
 
   test-packages:
     name: Test Swift Packages
