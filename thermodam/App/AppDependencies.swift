@@ -16,6 +16,7 @@ import SwiftUI
 /// Dependency flow: App -> Presentation -> Domain -> Data (outer to inner).
 struct AppDependencies {
     // MARK: - Public Interface
+    @ViewBuilder
     static var contentView: some View {
         SimulationView(viewModel: presentation.simulationViewModel)
     }
