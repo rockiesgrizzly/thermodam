@@ -1,6 +1,6 @@
 # ThermoDam App
 
-An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics.
+An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics. There's a bit of intentional over-engineering here to demonstrate a system to could be extended to production quality quickly.
 
 ## Architecture
 _The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers._
