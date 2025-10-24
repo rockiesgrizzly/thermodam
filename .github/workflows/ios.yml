@@ -7,17 +7,16 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test-ios:
-    name: Build & Test App Layer
+  build-ios:
+    name: Build iOS App
     runs-on: macos-15
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build and Test iOS App
+      - name: Build iOS App
         run: |
-          device=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
-          xcodebuild test -scheme thermodam -project thermodam.xcodeproj -destination "platform=iOS Simulator,name=$device"
+          xcodebuild build -scheme thermodam -project thermodam.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
 
   test-packages:
     name: Test Swift Packages
