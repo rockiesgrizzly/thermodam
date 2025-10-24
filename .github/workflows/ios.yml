@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-ios:
-    name: Test iOS App
+    name: Build & Test App Layer
     runs-on: macos-15
 
     steps:
