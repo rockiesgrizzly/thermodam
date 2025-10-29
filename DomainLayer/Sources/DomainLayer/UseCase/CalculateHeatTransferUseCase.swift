@@ -29,7 +29,7 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
         self.thermodynamicsRepository = thermodynamicsRepository
     }
 
-    public func execute(timeStep: Double) async throws {
+    public func execute(timeStep: Double) async throws -> SystemState {
         // Read current states
         let environment = try await environmentRepository.environment
         let panel = try await systemStateRepository.solarPanel
@@ -121,5 +121,13 @@ public struct CalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
 
         try await systemStateRepository.updateSolarPanel(updatedPanel)
         try await systemStateRepository.updateStorageTank(updatedTank)
+
+        // 10. Return updated system state
+        return SystemState(
+            environment: environment,
+            solarPanel: updatedPanel,
+            pump: pump,
+            storageTank: updatedTank
+        )
     }
 }

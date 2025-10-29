@@ -16,7 +16,6 @@ public final class SimulationViewModel {
     private let updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol
     private let togglePumpUseCase: TogglePumpUseCaseProtocol
     private let calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
-    private let getSystemStateUseCase: GetSystemStateUseCaseProtocol
 
     // State
     public var environment: Environment
@@ -32,13 +31,11 @@ public final class SimulationViewModel {
     public init(
         updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol,
         togglePumpUseCase: TogglePumpUseCaseProtocol,
-        calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol,
-        getSystemStateUseCase: GetSystemStateUseCaseProtocol
+        calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
     ) {
         self.updateEnvironmentUseCase = updateEnvironmentUseCase
         self.togglePumpUseCase = togglePumpUseCase
         self.calculateHeatTransferUseCase = calculateHeatTransferUseCase
-        self.getSystemStateUseCase = getSystemStateUseCase
 
         self.environment = Environment()
         self.solarPanel = SolarPanel()
@@ -71,9 +68,8 @@ public final class SimulationViewModel {
     /// Responds to pump toggle button tap
     public func respondToPumpToggle() async {
         do {
-            try await togglePumpUseCase.execute()
-            // Refresh entire state to ensure consistency
-            try await refreshState()
+            let systemState = try await togglePumpUseCase.execute()
+            applySystemState(systemState)
         } catch {
             print("Error toggling pump: \(error)")
         }
@@ -125,8 +121,8 @@ public final class SimulationViewModel {
 
     private func updateEnvironment(_ environment: Environment) async {
         do {
-            try await updateEnvironmentUseCase.execute(environment: environment)
-            self.environment = environment
+            let systemState = try await updateEnvironmentUseCase.execute(environment: environment)
+            applySystemState(systemState)
         } catch {
             print("Error updating environment: \(error)")
         }
@@ -152,16 +148,14 @@ public final class SimulationViewModel {
 
     private func runSimulationStep() async {
         do {
-            try await calculateHeatTransferUseCase.execute(timeStep: timeStep)
-            try await refreshState()
+            let systemState = try await calculateHeatTransferUseCase.execute(timeStep: timeStep)
+            applySystemState(systemState)
         } catch {
             print("Error in simulation step: \(error)")
         }
     }
 
-    private func refreshState() async throws {
-        // Poll repositories for updated state
-        let systemState = try await getSystemStateUseCase.systemState
+    private func applySystemState(_ systemState: SystemState) {
         self.environment = systemState.environment
         self.solarPanel = systemState.solarPanel
         self.pump = systemState.pump

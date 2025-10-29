@@ -29,11 +29,17 @@ public final class DomainFactory {
     // MARK: - Use Cases
 
     public lazy var updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol = {
-        UpdateEnvironmentUseCase(environmentRepository: environmentRepository)
+        UpdateEnvironmentUseCase(
+            environmentRepository: environmentRepository,
+            systemStateRepository: systemStateRepository
+        )
     }()
 
     public lazy var togglePumpUseCase: TogglePumpUseCaseProtocol = {
-        TogglePumpUseCase(systemStateRepository: systemStateRepository)
+        TogglePumpUseCase(
+            environmentRepository: environmentRepository,
+            systemStateRepository: systemStateRepository
+        )
     }()
 
     public lazy var calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol = {

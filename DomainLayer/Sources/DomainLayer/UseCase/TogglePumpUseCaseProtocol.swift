@@ -10,5 +10,6 @@ import Foundation
 /// Domain : Protocol : defines the contract for toggling the pump on/off
 public protocol TogglePumpUseCaseProtocol: Sendable {
     /// Toggles the pump state between on and off
-    func execute() async throws
+    /// - Returns: The updated system state after toggling the pump
+    func execute() async throws -> SystemState
 }

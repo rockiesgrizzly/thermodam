@@ -10,5 +10,7 @@ import Foundation
 /// Domain : Protocol : defines the contract for updating environmental conditions
 public protocol UpdateEnvironmentUseCaseProtocol: Sendable {
     /// Updates the environment state with new values
-    func execute(environment: Environment) async throws
+    /// - Parameter environment: The new environment state
+    /// - Returns: The updated system state after environment update
+    func execute(environment: Environment) async throws -> SystemState
 }

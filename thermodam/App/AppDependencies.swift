@@ -48,7 +48,6 @@ extension AppDependencies {
     static let presentation = PresentationFactory(
         updateEnvironmentUseCase: domain.updateEnvironmentUseCase,
         togglePumpUseCase: domain.togglePumpUseCase,
-        calculateHeatTransferUseCase: domain.calculateHeatTransferUseCase,
-        getSystemStateUseCase: domain.getSystemStateUseCase
+        calculateHeatTransferUseCase: domain.calculateHeatTransferUseCase
     )
 }

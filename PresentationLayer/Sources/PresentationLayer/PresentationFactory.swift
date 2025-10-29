@@ -13,18 +13,15 @@ public final class PresentationFactory {
     private let updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol
     private let togglePumpUseCase: TogglePumpUseCaseProtocol
     private let calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
-    private let getSystemStateUseCase: GetSystemStateUseCaseProtocol
 
     public init(
         updateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol,
         togglePumpUseCase: TogglePumpUseCaseProtocol,
-        calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol,
-        getSystemStateUseCase: GetSystemStateUseCaseProtocol
+        calculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol
     ) {
         self.updateEnvironmentUseCase = updateEnvironmentUseCase
         self.togglePumpUseCase = togglePumpUseCase
         self.calculateHeatTransferUseCase = calculateHeatTransferUseCase
-        self.getSystemStateUseCase = getSystemStateUseCase
     }
 
     // MARK: - ViewModels
@@ -34,8 +31,7 @@ public final class PresentationFactory {
         SimulationViewModel(
             updateEnvironmentUseCase: updateEnvironmentUseCase,
             togglePumpUseCase: togglePumpUseCase,
-            calculateHeatTransferUseCase: calculateHeatTransferUseCase,
-            getSystemStateUseCase: getSystemStateUseCase
+            calculateHeatTransferUseCase: calculateHeatTransferUseCase
         )
     }()
 }

@@ -11,5 +11,6 @@ import Foundation
 public protocol CalculateHeatTransferUseCaseProtocol: Sendable {
     /// Calculates and applies heat transfer for the given time step
     /// - Parameter timeStep: Duration in seconds for this calculation step
-    func execute(timeStep: Double) async throws
+    /// - Returns: The updated system state after heat transfer calculations
+    func execute(timeStep: Double) async throws -> SystemState
 }
