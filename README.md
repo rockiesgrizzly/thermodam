@@ -27,8 +27,8 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 - **AppDependencies**: Composition root with singleton factory instances (prevents duplicate LocalDataSource)
 
 ### Domain Layer (Swift Package)
-- **Models**: Environment, SolarPanel, Pump, StorageTank, SystemConfiguration
-- **Use Cases**: UpdateEnvironmentUseCase, TogglePumpUseCase, CalculateHeatTransferUseCase, GetSystemStateUseCase
+- **Models**: Environment, SolarPanel, Pump, StorageTank, SystemConfiguration, SystemState
+- **Use Cases**: UpdateEnvironmentUseCase, TogglePumpUseCase, CalculateHeatTransferUseCase (all return SystemState for reactive updates)
 - **Repository Protocols**: Define contracts for data access
 - **DomainFactory**: Creates use cases from repository protocols (lazy singletons)
 - **Tests**: comprehensive unit tests for all use cases
@@ -44,8 +44,9 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 - **Package isolation**: Each layer is a separate Swift Package with explicit dependencies
 - **Dependency rule**: Dependencies point inward (Domain has no dependencies, Data depends on Domain, Presentation depends on Domain)
 - **Protocol-based**: All cross-layer communication through protocols
+- **Reactive architecture**: Use cases return SystemState directly, eliminating manual polling and creating immediate reactive updates
 - **Testability**: Mock implementations for all protocols, 45 tests total:
-  - 20 Domain tests (GetSystemState: 3, CalculateHeatTransfer: 7, TogglePump: 5, UpdateEnvironment: 5)
+  - 20 Domain tests (CalculateHeatTransfer: 7, TogglePump: 5, UpdateEnvironment: 5, GetSystemState: 3)
   - 18 Data tests (ThermodynamicsEngine formulas)
   - 7 Presentation integration tests
 - **Separation of concerns**: Business logic (Domain), data access (Data), UI (Presentation) clearly separated
@@ -68,23 +69,23 @@ _The app uses Clean Swift architecture which provides clear separation of concer
 - **StatisticsView**: overall metrics and graphs
 
 ### Use Cases
+All use cases follow a reactive pattern: they perform their operation and return the complete SystemState, eliminating the need for manual polling.
+
 **UpdateEnvironmentUseCase**:
 - Writes: sun position, solar intensity, ambient temperature
-- Reads: nothing (just updates from user input)
+- Reads: component states for SystemState
+- Returns: complete SystemState with updated environment
 
 **CalculateHeatTransferUseCase**:
 - Reads: environment state, component states (panel temp, tank temp, pump status)
 - Writes: updated temperatures, energy values
 - Uses: ThermodynamicsEngine for calculations
+- Returns: complete SystemState with updated temperatures and energy
 
 **TogglePumpUseCase**:
 - Writes: pump on/off, flow rate
-- Reads: current pump state
-
-**GetSystemStateUseCase**:
-- Reads: environment state, component states (all repositories)
-- Writes: nothing (read-only query)
-- Returns: complete SystemState snapshot
+- Reads: current pump state, all other component states
+- Returns: complete SystemState with toggled pump state
 
 ### Data Handling
 **Repositories**:
@@ -130,7 +131,7 @@ Formulas based on standard heat transfer and thermodynamics principles:
 ### Requirements
 - macOS 14.0+
 - Xcode 18.0+
-- Swift 6.1+
+- Swift 6.2+
 
 ### Running the App
 1. Open `thermodam.xcodeproj` in Xcode
