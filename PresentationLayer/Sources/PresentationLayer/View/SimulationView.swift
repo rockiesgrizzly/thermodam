@@ -163,8 +163,7 @@ import DomainLayer // only used for preview setup purposes
         viewModel: SimulationViewModel(
             updateEnvironmentUseCase: PreviewMocks.updateEnvironmentUseCase,
             togglePumpUseCase: PreviewMocks.togglePumpUseCase,
-            calculateHeatTransferUseCase: PreviewMocks.calculateHeatTransferUseCase,
-            getSystemStateUseCase: PreviewMocks.getSystemStateUseCase
+            calculateHeatTransferUseCase: PreviewMocks.calculateHeatTransferUseCase
         )
     )
 }
@@ -175,30 +174,37 @@ private enum PreviewMocks {
     static let updateEnvironmentUseCase = MockUpdateEnvironmentUseCase()
     static let togglePumpUseCase = MockTogglePumpUseCase()
     static let calculateHeatTransferUseCase = MockCalculateHeatTransferUseCase()
-    static let getSystemStateUseCase = MockGetSystemStateUseCase()
 }
 
 private final class MockUpdateEnvironmentUseCase: UpdateEnvironmentUseCaseProtocol {
-    func execute(environment: DomainLayer.Environment) async throws {}
+    func execute(environment: DomainLayer.Environment) async throws -> SystemState {
+        SystemState(
+            environment: environment,
+            solarPanel: SolarPanel(),
+            pump: Pump(),
+            storageTank: StorageTank()
+        )
+    }
 }
 
 private final class MockTogglePumpUseCase: TogglePumpUseCaseProtocol {
-    func execute() async throws {}
+    func execute() async throws -> SystemState {
+        SystemState(
+            environment: Environment(),
+            solarPanel: SolarPanel(),
+            pump: Pump(isRunning: true),
+            storageTank: StorageTank()
+        )
+    }
 }
 
 private final class MockCalculateHeatTransferUseCase: CalculateHeatTransferUseCaseProtocol {
-    func execute(timeStep: Double) async throws {}
-}
-
-private final class MockGetSystemStateUseCase: GetSystemStateUseCaseProtocol {
-    var systemState: SystemState {
-        get async throws {
-            SystemState(
-                environment: Environment(),
-                solarPanel: SolarPanel(),
-                pump: Pump(),
-                storageTank: StorageTank()
-            )
-        }
+    func execute(timeStep: Double) async throws -> SystemState {
+        SystemState(
+            environment: Environment(),
+            solarPanel: SolarPanel(),
+            pump: Pump(),
+            storageTank: StorageTank()
+        )
     }
 }
