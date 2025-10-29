@@ -105,7 +105,7 @@ struct TogglePumpUseCaseTests {
 
 // MARK: - Mock Repository
 
-final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked Sendable {
+private final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked Sendable {
     private var _pump: Pump
     private var _solarPanel: SolarPanel
     private var _storageTank: StorageTank
@@ -159,7 +159,7 @@ final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked
     func updateStorageTank(_ storageTank: StorageTank) async throws {}
 }
 
-final class MockEnvironmentRepository: EnvironmentRepositoryProtocol, @unchecked Sendable {
+private final class MockEnvironmentRepository: EnvironmentRepositoryProtocol, @unchecked Sendable {
     private var _environment: Environment
 
     init(environment: Environment = Environment()) {
@@ -177,6 +177,6 @@ final class MockEnvironmentRepository: EnvironmentRepositoryProtocol, @unchecked
     }
 }
 
-enum MockError: Error {
+private enum MockError: Error {
     case repositoryError
 }
