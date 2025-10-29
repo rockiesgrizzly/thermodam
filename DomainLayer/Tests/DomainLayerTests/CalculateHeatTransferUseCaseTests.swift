@@ -34,9 +34,12 @@ struct CalculateHeatTransferUseCaseTests {
         )
 
         // When: calculate for time step
-        try await useCase.execute(timeStep: 1.0)
+        let systemState = try await useCase.execute(timeStep: 1.0)
 
         // Then: panel temp increases, tank unchanged
+        #expect(systemState.solarPanel.temperature > panel.temperature)
+        #expect(systemState.storageTank.temperature == tank.temperature)
+
         let updatedPanel = try await stateRepo.solarPanel
         let updatedTank = try await stateRepo.storageTank
         #expect(updatedPanel.temperature > panel.temperature)
@@ -63,9 +66,12 @@ struct CalculateHeatTransferUseCaseTests {
         )
 
         // When: calculate
-        try await useCase.execute(timeStep: 1.0)
+        let systemState = try await useCase.execute(timeStep: 1.0)
 
         // Then: panel cools, tank heats up
+        #expect(systemState.solarPanel.temperature < panel.temperature)
+        #expect(systemState.storageTank.temperature > tank.temperature)
+
         let updatedPanel = try await stateRepo.solarPanel
         let updatedTank = try await stateRepo.storageTank
         #expect(updatedPanel.temperature < panel.temperature)
@@ -92,9 +98,12 @@ struct CalculateHeatTransferUseCaseTests {
         )
 
         // When: calculate
-        try await useCase.execute(timeStep: 1.0)
+        let systemState = try await useCase.execute(timeStep: 1.0)
 
         // Then: temperatures change due to losses only, not fluid transfer
+        #expect(systemState.solarPanel.temperature < panel.temperature)
+        #expect(systemState.storageTank.temperature < tank.temperature)
+
         let updatedPanel = try await stateRepo.solarPanel
         let updatedTank = try await stateRepo.storageTank
         // Panel loses heat to ambient (no solar, no pump)
@@ -124,9 +133,14 @@ struct CalculateHeatTransferUseCaseTests {
         )
 
         // When: calculate
-        try await useCase.execute(timeStep: 1.0)
+        let systemState = try await useCase.execute(timeStep: 1.0)
 
         // Then: both lose heat toward ambient
+        #expect(systemState.solarPanel.temperature < panel.temperature)
+        #expect(systemState.solarPanel.temperature > ambientTemp)
+        #expect(systemState.storageTank.temperature < tank.temperature)
+        #expect(systemState.storageTank.temperature > ambientTemp)
+
         let updatedPanel = try await stateRepo.solarPanel
         let updatedTank = try await stateRepo.storageTank
         #expect(updatedPanel.temperature < panel.temperature)
@@ -155,9 +169,12 @@ struct CalculateHeatTransferUseCaseTests {
         )
 
         // When: calculate
-        try await useCase.execute(timeStep: 1.0)
+        let systemState = try await useCase.execute(timeStep: 1.0)
 
         // Then: panel cools (no solar gains, only losses)
+        #expect(systemState.solarPanel.temperature < panel.temperature)
+        #expect(systemState.solarPanel.heatAbsorptionRate == 0.0)
+
         let updatedPanel = try await stateRepo.solarPanel
         #expect(updatedPanel.temperature < panel.temperature)
         #expect(updatedPanel.heatAbsorptionRate == 0.0)
@@ -183,11 +200,13 @@ struct CalculateHeatTransferUseCaseTests {
         )
 
         // When: calculate
-        try await useCase.execute(timeStep: 1.0)
+        let systemState = try await useCase.execute(timeStep: 1.0)
 
-        // Then: solar panel and tank were both updated
+        // Then: solar panel and tank were both updated in repo and state returned
         #expect(stateRepo.updateSolarPanelCallCount == 1)
         #expect(stateRepo.updateStorageTankCallCount == 1)
+        #expect(systemState.environment == environment)
+        #expect(systemState.pump == pump)
     }
 
     @Test func timeStepScaling() async throws {
@@ -217,17 +236,21 @@ struct CalculateHeatTransferUseCaseTests {
         )
 
         // When: calculate with different time steps
-        try await useCase1.execute(timeStep: 1.0)
-        try await useCase2.execute(timeStep: 10.0)
+        let systemState1 = try await useCase1.execute(timeStep: 1.0)
+        let systemState2 = try await useCase2.execute(timeStep: 10.0)
 
         // Then: larger time step produces proportionally larger temperature change
-        let updatedPanel1 = try await stateRepo1.solarPanel
-        let updatedPanel2 = try await stateRepo2.solarPanel
-        let tempChange1 = updatedPanel1.temperature - panel1.temperature
-        let tempChange2 = updatedPanel2.temperature - panel2.temperature
+        let tempChange1 = systemState1.solarPanel.temperature - panel1.temperature
+        let tempChange2 = systemState2.solarPanel.temperature - panel2.temperature
 
         // 10x time step should produce roughly 10x temperature change
         #expect(abs(tempChange2 / tempChange1 - 10.0) < 0.1)
+
+        // Also verify repo updates match
+        let updatedPanel1 = try await stateRepo1.solarPanel
+        let updatedPanel2 = try await stateRepo2.solarPanel
+        #expect(updatedPanel1.temperature == systemState1.solarPanel.temperature)
+        #expect(updatedPanel2.temperature == systemState2.solarPanel.temperature)
     }
 }
 
