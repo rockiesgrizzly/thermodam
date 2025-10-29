@@ -18,6 +18,9 @@ public protocol SystemStateRepositoryProtocol: Sendable {
     /// Current storage tank state
     var storageTank: StorageTank { get async throws }
 
+    /// Stream of complete system state updates
+    var stateStream: AsyncStream<SystemState> { get async }
+
     /// Updates the solar panel state
     func updateSolarPanel(_ solarPanel: SolarPanel) async throws
 

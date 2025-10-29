@@ -26,6 +26,7 @@ public final class SimulationViewModel {
     public var isSimulationRunning: Bool = false
 
     private var simulationTask: Task<Void, Never>?
+    private var stateObservationTask: Task<Void, Never>?
     private let timeStep: Double = 1.0
     private let updateInterval: Double = 0.1
 
@@ -44,6 +45,9 @@ public final class SimulationViewModel {
         self.solarPanel = SolarPanel()
         self.pump = Pump()
         self.storageTank = StorageTank()
+
+        // Start observing state changes reactively
+        observeStateChanges()
     }
 
     // MARK: - UI Interactions
@@ -72,8 +76,7 @@ public final class SimulationViewModel {
     public func respondToPumpToggle() async {
         do {
             try await togglePumpUseCase.execute()
-            // Refresh entire state to ensure consistency
-            try await refreshState()
+            // State updates automatically via stream
         } catch {
             print("Error toggling pump: \(error)")
         }
@@ -153,18 +156,24 @@ public final class SimulationViewModel {
     private func runSimulationStep() async {
         do {
             try await calculateHeatTransferUseCase.execute(timeStep: timeStep)
-            try await refreshState()
+            // State updates automatically via stream
         } catch {
             print("Error in simulation step: \(error)")
         }
     }
 
-    private func refreshState() async throws {
-        // Poll repositories for updated state
-        let systemState = try await getSystemStateUseCase.systemState
-        self.environment = systemState.environment
-        self.solarPanel = systemState.solarPanel
-        self.pump = systemState.pump
-        self.storageTank = systemState.storageTank
+    private func observeStateChanges() {
+        stateObservationTask = Task { [weak self] in
+            guard let self = self else { return }
+            let stream = await self.getSystemStateUseCase.stateStream
+
+            for await state in stream {
+                guard !Task.isCancelled else { break }
+                self.environment = state.environment
+                self.solarPanel = state.solarPanel
+                self.pump = state.pump
+                self.storageTank = state.storageTank
+            }
+        }
     }
 }

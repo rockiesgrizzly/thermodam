@@ -123,6 +123,22 @@ final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked
         }
     }
 
+    var stateStream: AsyncStream<SystemState> {
+        get async {
+            AsyncStream { continuation in
+                // Mock stream that yields current state once
+                let state = SystemState(
+                    environment: Environment(),
+                    solarPanel: _solarPanel,
+                    pump: _pump,
+                    storageTank: _storageTank
+                )
+                continuation.yield(state)
+                continuation.finish()
+            }
+        }
+    }
+
     func updatePump(_ pump: Pump) async throws {
         if shouldThrowError { throw MockError.repositoryError }
         updatePumpCallCount += 1

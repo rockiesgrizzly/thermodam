@@ -277,6 +277,22 @@ final class MockSystemStateRepo: SystemStateRepositoryProtocol, @unchecked Senda
         get async throws { _storageTank }
     }
 
+    var stateStream: AsyncStream<SystemState> {
+        get async {
+            AsyncStream { continuation in
+                // Mock stream that yields current state once
+                let state = SystemState(
+                    environment: Environment(),
+                    solarPanel: _solarPanel,
+                    pump: _pump,
+                    storageTank: _storageTank
+                )
+                continuation.yield(state)
+                continuation.finish()
+            }
+        }
+    }
+
     func updateSolarPanel(_ solarPanel: SolarPanel) async throws {
         updateSolarPanelCallCount += 1
         _solarPanel = solarPanel

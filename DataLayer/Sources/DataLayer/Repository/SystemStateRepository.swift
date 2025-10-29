@@ -16,6 +16,16 @@ public struct SystemStateRepository: SystemStateRepositoryProtocol {
         self.localDataSource = localDataSource
     }
 
+    // MARK: - State Stream
+
+    public var stateStream: AsyncStream<SystemState> {
+        get async {
+            // Access the stream from LocalDataSource
+            // Note: AsyncStream is Sendable and can be safely shared across actor boundaries
+            localDataSource.stateStream
+        }
+    }
+
     // MARK: - Solar Panel
 
     public var solarPanel: SolarPanel {

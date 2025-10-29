@@ -16,6 +16,26 @@ import Testing
 @MainActor
 struct IntegrationTests {
 
+    // MARK: - Test Helper: Wait for condition with timeout
+
+    private func waitForCondition(
+        timeout: Duration = .seconds(1),
+        pollingInterval: Duration = .milliseconds(10),
+        condition: @escaping () -> Bool
+    ) async throws {
+        let deadline = ContinuousClock.now + timeout
+
+        while ContinuousClock.now < deadline {
+            if condition() {
+                return
+            }
+            try await Task.sleep(for: pollingInterval)
+        }
+
+        // Condition not met within timeout
+        throw TestError.timeoutWaitingForCondition
+    }
+
     // MARK: - Test 1: Sun Drag Updates Environment Through All Layers
 
     @Test("Dragging sun updates environment and propagates through entire stack")
@@ -69,11 +89,21 @@ struct IntegrationTests {
         // When: User taps pump toggle button
         await viewModel.respondToPumpToggle()
 
+        // Wait for state to update via stream
+        try await waitForCondition {
+            viewModel.pump.isRunning == true
+        }
+
         // Then: Pump state should toggle
         #expect(viewModel.pump.isRunning == true)
 
         // When: Toggle again
         await viewModel.respondToPumpToggle()
+
+        // Wait for state to update via stream
+        try await waitForCondition {
+            viewModel.pump.isRunning == false
+        }
 
         // Then: Should toggle back
         #expect(viewModel.pump.isRunning == false)
@@ -125,6 +155,13 @@ struct IntegrationTests {
         await viewModel.respondToSunViewDrag(position: CGPoint(x: 100, y: 40), solarIntensity: 850.0)
         await viewModel.respondToAmbientTemperatureChange(25.0)
         await viewModel.respondToPumpToggle()
+
+        // Wait for all state updates to propagate via stream
+        try await waitForCondition {
+            viewModel.environment.solarIntensity == 850.0 &&
+            viewModel.environment.ambientTemperature == 25.0 &&
+            viewModel.pump.isRunning == true
+        }
 
         // Then: All child ViewModels should reflect current state
         let envVM = viewModel.environmentViewModel
@@ -190,9 +227,14 @@ struct IntegrationTests {
             await viewModel.respondToAmbientTemperatureChange(Double(20 + i))
         }
 
-        // Toggle pump rapidly
+        // Toggle pump rapidly (5 times: OFF → ON → OFF → ON → OFF → ON)
         for _ in 0..<5 {
             await viewModel.respondToPumpToggle()
+        }
+
+        // Wait for final pump state (should be ON after 5 toggles)
+        try await waitForCondition {
+            viewModel.pump.isRunning == true
         }
 
         // Then: Final state should be valid and consistent
@@ -203,6 +245,12 @@ struct IntegrationTests {
 
         // Pump should have toggled odd number of times (started OFF, so now ON)
         #expect(viewModel.pump.isRunning == true)
+    }
+
+    // MARK: - Test Error
+
+    enum TestError: Error {
+        case timeoutWaitingForCondition
     }
 
     // MARK: - Helper Factory

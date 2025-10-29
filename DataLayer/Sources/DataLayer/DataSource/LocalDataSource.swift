@@ -16,6 +16,10 @@ public actor LocalDataSource {
     private var currentStorageTank: StorageTank
     private let systemConfiguration: SystemConfiguration
 
+    // AsyncStream for reactive state updates
+    private var stateContinuation: AsyncStream<SystemState>.Continuation?
+    public let stateStream: AsyncStream<SystemState>
+
     public init(
         environment: Environment = Environment(),
         solarPanel: SolarPanel = SolarPanel(),
@@ -28,6 +32,22 @@ public actor LocalDataSource {
         self.currentPump = pump
         self.currentStorageTank = storageTank
         self.systemConfiguration = configuration
+
+        // Setup AsyncStream for state broadcasting
+        let initialState = SystemState(
+            environment: environment,
+            solarPanel: solarPanel,
+            pump: pump,
+            storageTank: storageTank
+        )
+
+        var continuation: AsyncStream<SystemState>.Continuation?
+        self.stateStream = AsyncStream { cont in
+            continuation = cont
+            // Emit initial state synchronously during init
+            cont.yield(initialState)
+        }
+        self.stateContinuation = continuation
     }
 
     // MARK: - Environment
@@ -38,6 +58,7 @@ public actor LocalDataSource {
 
     public func updateEnvironment(_ environment: Environment) {
         currentEnvironment = environment
+        emitState()
     }
 
     // MARK: - Solar Panel
@@ -48,6 +69,7 @@ public actor LocalDataSource {
 
     public func updateSolarPanel(_ solarPanel: SolarPanel) {
         currentSolarPanel = solarPanel
+        emitState()
     }
 
     // MARK: - Pump
@@ -58,6 +80,7 @@ public actor LocalDataSource {
 
     public func updatePump(_ pump: Pump) {
         currentPump = pump
+        emitState()
     }
 
     // MARK: - Storage Tank
@@ -68,11 +91,24 @@ public actor LocalDataSource {
 
     public func updateStorageTank(_ storageTank: StorageTank) {
         currentStorageTank = storageTank
+        emitState()
     }
 
     // MARK: - Configuration
 
     public var configuration: SystemConfiguration {
         systemConfiguration
+    }
+
+    // MARK: - State Broadcasting
+
+    private func emitState() {
+        let state = SystemState(
+            environment: currentEnvironment,
+            solarPanel: currentSolarPanel,
+            pump: currentPump,
+            storageTank: currentStorageTank
+        )
+        stateContinuation?.yield(state)
     }
 }

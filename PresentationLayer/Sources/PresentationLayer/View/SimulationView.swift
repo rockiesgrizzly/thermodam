@@ -201,4 +201,18 @@ private final class MockGetSystemStateUseCase: GetSystemStateUseCaseProtocol {
             )
         }
     }
+
+    var stateStream: AsyncStream<SystemState> {
+        get async {
+            AsyncStream { continuation in
+                let state = SystemState(
+                    environment: Environment(),
+                    solarPanel: SolarPanel(),
+                    pump: Pump(),
+                    storageTank: StorageTank()
+                )
+                continuation.yield(state)
+            }
+        }
+    }
 }

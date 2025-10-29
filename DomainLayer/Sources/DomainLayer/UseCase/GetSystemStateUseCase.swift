@@ -10,6 +10,7 @@ import Foundation
 /// Domain : UseCase : retrieves current system state from repositories
 public protocol GetSystemStateUseCaseProtocol: Sendable {
     var systemState: SystemState { get async throws }
+    var stateStream: AsyncStream<SystemState> { get async }
 }
 
 /// Encapsulates the complete system state
@@ -57,6 +58,12 @@ public final class GetSystemStateUseCase: GetSystemStateUseCaseProtocol {
                 pump: pump,
                 storageTank: storageTank
             )
+        }
+    }
+
+    public var stateStream: AsyncStream<SystemState> {
+        get async {
+            await systemStateRepository.stateStream
         }
     }
 }
