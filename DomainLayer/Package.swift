@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "DomainLayer",
     platforms: [
-        .iOS(.v26),
+        .iOS(.v18),
         .macOS(.v14)
     ],
     products: [
@@ -14,7 +14,7 @@ let package = Package(
         .library(
             name: "DomainLayer",
             targets: ["DomainLayer"]
-        ),
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -25,6 +25,6 @@ let package = Package(
         .testTarget(
             name: "DomainLayerTests",
             dependencies: ["DomainLayer"]
-        ),
+        )
     ]
 )

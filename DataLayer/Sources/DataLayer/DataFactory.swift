@@ -28,7 +28,7 @@ public final class DataFactory {
             storageTank: storageTank,
             configuration: configuration
         )
-        
+
         self.thermodynamicsEngine = thermodynamicsEngine
     }
 

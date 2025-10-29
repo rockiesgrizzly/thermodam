@@ -14,14 +14,10 @@ import SwiftUI
 /// `AppDependencies` provides dependency injection for the app in Clean architecture.
 /// Serves as the composition root that wires up all dependencies across layers.
 /// Dependency flow: App -> Presentation -> Domain -> Data (outer to inner).
-@MainActor
-@Observable
-final class AppDependencies {
-
-    init() {}
-
+struct AppDependencies {
     // MARK: - Public Interface
-
+    @MainActor
+    @ViewBuilder
     static var contentView: some View {
         SimulationView(viewModel: presentation.simulationViewModel)
     }

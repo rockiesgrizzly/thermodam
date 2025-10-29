@@ -1,0 +1,35 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-ios:
+    name: Build iOS App
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build iOS App
+        run: |
+          xcodebuild build -scheme thermodam -project thermodam.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
+
+  test-packages:
+    name: Test Swift Packages
+    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [DataLayer, DomainLayer, PresentationLayer]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Test ${{ matrix.package }}
+        run: |
+          cd ${{ matrix.package }}
+          swift test

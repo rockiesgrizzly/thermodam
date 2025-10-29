@@ -1,6 +1,6 @@
-# ThermoDam App
+# Thermodam App
 
-An example app showing a simple software simulation of the heat transfer from a solar panel to a storage tank with attention to thermodynamics. There's a bit of intentional over-engineering here to demonstrate a system that could be extended to production quality quickly.
+An example iOS app showing a **simple solar thermal simulation** of the heat transfer from a solar panel to a storage tank with attention to thermodynamics. There's a bit of intentional over-engineering here to demonstrate a system that could be extended to production quality quickly.
 
 ## App in Action
 https://github.com/user-attachments/assets/49b05796-8822-4b43-8ace-27c026ad4a95
@@ -9,7 +9,11 @@ https://github.com/user-attachments/assets/c903caa0-3454-4667-a0c5-a5ba591e80d0
 
 ## Architecture
 _The app uses Clean Swift architecture which provides clear separation of concerns between Presentation, App, Domain, and Data layers._
-<img width="1403" height="298" alt="Thermodam Architecture : Clean Swift approach" src="https://github.com/user-attachments/assets/f9978631-d512-4bc0-ace8-a1716a751f64" />
+
+<img height="850" alt="Thermodam Architecture : Clean Swift approach" src="https://github.com/user-attachments/assets/24fc5461-8af7-42b7-90fb-b76434f613f0" />
+
+[Mermaid Chart UML Link](https://www.mermaidchart.com/app/projects/86aa48ac-f638-4135-bb0f-8dd0b2441ef8/diagrams/fc8134b9-30b6-4bff-941a-785edbda47c2/share/invite/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudElEIjoiZmM4MTM0YjktMzBiNi00YmZmLTk0MWEtNzg1ZWRiZGE0N2MyIiwiYWNjZXNzIjoiRWRpdCIsImlhdCI6MTc2MTMyNzc4N30.mqxK1jy9qIyiC5EOV_jCO2Mg5MsK-dNmQOPUE5zMXVI)
+
 
 ### Presentation Layer (Swift Package)
 - **SimulationViewModel**: Main coordinator using `@Observable`, holds system state, handles UI interactions
@@ -125,8 +129,8 @@ Formulas based on standard heat transfer and thermodynamics principles:
 
 ### Requirements
 - macOS 14.0+
-- Xcode 16.0+
-- Swift 6.2+
+- Xcode 18.0+
+- Swift 6.1+
 
 ### Running the App
 1. Open `thermodam.xcodeproj` in Xcode

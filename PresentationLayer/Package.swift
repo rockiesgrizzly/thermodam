@@ -1,4 +1,4 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "PresentationLayer",
     platforms: [
-        .iOS(.v26),
+        .iOS(.v18),
         .macOS(.v14)
     ],
     products: [
@@ -14,7 +14,7 @@ let package = Package(
         .library(
             name: "PresentationLayer",
             targets: ["PresentationLayer"]
-        ),
+        )
     ],
     dependencies: [
         .package(path: "../DataLayer"), // Consumed only by testing for integration/end-to-end
@@ -25,12 +25,12 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "PresentationLayer",
-            dependencies: ["DataLayer", // Consumed only by testing for integration/end-to-end
-                           "DomainLayer"]
+            dependencies: ["DomainLayer"]
         ),
         .testTarget(
             name: "PresentationLayerTests",
-            dependencies: ["PresentationLayer"]
-        ),
+            dependencies: ["DataLayer", // Consumed only by testing for integration/end-to-end,
+                           "PresentationLayer"]
+        )
     ]
 )
