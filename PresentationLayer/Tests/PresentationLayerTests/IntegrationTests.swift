@@ -220,8 +220,7 @@ struct IntegrationTests {
         return SimulationViewModel(
             updateEnvironmentUseCase: domainFactory.updateEnvironmentUseCase,
             togglePumpUseCase: domainFactory.togglePumpUseCase,
-            calculateHeatTransferUseCase: domainFactory.calculateHeatTransferUseCase,
-            getSystemStateUseCase: domainFactory.getSystemStateUseCase
+            calculateHeatTransferUseCase: domainFactory.calculateHeatTransferUseCase
         )
     }
 }
