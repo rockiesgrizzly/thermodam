@@ -85,3 +85,71 @@ struct GetSystemStateUseCaseTests {
         }
     }
 }
+
+// MARK: - Mock Repositories
+
+final class MockEnvironmentRepository: EnvironmentRepositoryProtocol, @unchecked Sendable {
+    private var _environment: Environment
+    private let shouldThrowError: Bool
+
+    init(environment: Environment = Environment(), shouldThrowError: Bool = false) {
+        self._environment = environment
+        self.shouldThrowError = shouldThrowError
+    }
+
+    var environment: Environment {
+        get async throws {
+            if shouldThrowError { throw MockError.repositoryError }
+            return _environment
+        }
+    }
+
+    func updateEnvironment(_ environment: Environment) async throws {
+        if shouldThrowError { throw MockError.repositoryError }
+        _environment = environment
+    }
+}
+
+final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked Sendable {
+    private var _pump: Pump
+    private var _solarPanel: SolarPanel
+    private var _storageTank: StorageTank
+
+    init(
+        pump: Pump = Pump(),
+        solarPanel: SolarPanel = SolarPanel(),
+        storageTank: StorageTank = StorageTank()
+    ) {
+        self._pump = pump
+        self._solarPanel = solarPanel
+        self._storageTank = storageTank
+    }
+
+    var pump: Pump {
+        get async throws { _pump }
+    }
+
+    var solarPanel: SolarPanel {
+        get async throws { _solarPanel }
+    }
+
+    var storageTank: StorageTank {
+        get async throws { _storageTank }
+    }
+
+    func updatePump(_ pump: Pump) async throws {
+        _pump = pump
+    }
+
+    func updateSolarPanel(_ solarPanel: SolarPanel) async throws {
+        _solarPanel = solarPanel
+    }
+
+    func updateStorageTank(_ storageTank: StorageTank) async throws {
+        _storageTank = storageTank
+    }
+}
+
+enum MockError: Error {
+    case repositoryError
+}
