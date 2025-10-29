@@ -18,28 +18,38 @@ struct UpdateEnvironmentUseCaseTests {
             ambientTemperature: 25.0,
             sunPosition: CGPoint(x: 150, y: 200)
         )
-        let mockRepo = MockEnvironmentRepository()
-        let useCase = UpdateEnvironmentUseCase(environmentRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository()
+        let useCase = UpdateEnvironmentUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute with environment
-        try await useCase.execute(environment: newEnvironment)
+        let systemState = try await useCase.execute(environment: newEnvironment)
 
-        // Then: repository is updated with exact values
-        let updatedEnvironment = try await mockRepo.environment
+        // Then: repository is updated and state returned
+        #expect(systemState.environment == newEnvironment)
+        let updatedEnvironment = try await mockEnvRepo.environment
         #expect(updatedEnvironment == newEnvironment)
     }
 
     @Test func repositoryUpdateIsCalledOnce() async throws {
         // Given: new environment
         let newEnvironment = Environment(solarIntensity: 750.0)
-        let mockRepo = MockEnvironmentRepository()
-        let useCase = UpdateEnvironmentUseCase(environmentRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository()
+        let useCase = UpdateEnvironmentUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute
-        try await useCase.execute(environment: newEnvironment)
+        let systemState = try await useCase.execute(environment: newEnvironment)
 
-        // Then: updateEnvironment() called exactly once
-        #expect(mockRepo.updateEnvironmentCallCount == 1)
+        // Then: updateEnvironment() called exactly once and state returned
+        #expect(mockEnvRepo.updateEnvironmentCallCount == 1)
+        #expect(systemState.environment == newEnvironment)
     }
 
     @Test func allEnvironmentPropertiesArePreserved() async throws {
@@ -52,14 +62,23 @@ struct UpdateEnvironmentUseCaseTests {
             ambientTemperature: ambientTemp,
             sunPosition: sunPosition
         )
-        let mockRepo = MockEnvironmentRepository()
-        let useCase = UpdateEnvironmentUseCase(environmentRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository()
+        let useCase = UpdateEnvironmentUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute
-        try await useCase.execute(environment: environment)
+        let systemState = try await useCase.execute(environment: environment)
 
-        // Then: all properties match in repository
-        let updated = try await mockRepo.environment
+        // Then: all properties match in returned state and repository
+        #expect(systemState.environment.solarIntensity == solarIntensity)
+        #expect(systemState.environment.ambientTemperature == ambientTemp)
+        #expect(systemState.environment.sunPosition.x == sunPosition.x)
+        #expect(systemState.environment.sunPosition.y == sunPosition.y)
+
+        let updated = try await mockEnvRepo.environment
         #expect(updated.solarIntensity == solarIntensity)
         #expect(updated.ambientTemperature == ambientTemp)
         #expect(updated.sunPosition.x == sunPosition.x)
@@ -68,8 +87,12 @@ struct UpdateEnvironmentUseCaseTests {
 
     @Test func errorPropagationFromRepository() async throws {
         // Given: repository that throws error
-        let mockRepo = MockEnvironmentRepository(shouldThrowError: true)
-        let useCase = UpdateEnvironmentUseCase(environmentRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository(shouldThrowError: true)
+        let mockStateRepo = MockSystemStateRepository()
+        let useCase = UpdateEnvironmentUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
         let environment = Environment()
 
         // When/Then: execute throws error
@@ -83,18 +106,27 @@ struct UpdateEnvironmentUseCaseTests {
         let environment1 = Environment(solarIntensity: 500.0, ambientTemperature: 15.0)
         let environment2 = Environment(solarIntensity: 800.0, ambientTemperature: 22.0)
         let environment3 = Environment(solarIntensity: 1000.0, ambientTemperature: 28.0)
-        let mockRepo = MockEnvironmentRepository()
-        let useCase = UpdateEnvironmentUseCase(environmentRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository()
+        let useCase = UpdateEnvironmentUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute multiple times
-        try await useCase.execute(environment: environment1)
-        try await useCase.execute(environment: environment2)
-        try await useCase.execute(environment: environment3)
+        let state1 = try await useCase.execute(environment: environment1)
+        let state2 = try await useCase.execute(environment: environment2)
+        let state3 = try await useCase.execute(environment: environment3)
 
-        // Then: repository reflects latest update
-        let finalEnvironment = try await mockRepo.environment
+        // Then: each returned state matches its input
+        #expect(state1.environment == environment1)
+        #expect(state2.environment == environment2)
+        #expect(state3.environment == environment3)
+
+        // And repository reflects latest update
+        let finalEnvironment = try await mockEnvRepo.environment
         #expect(finalEnvironment == environment3)
-        #expect(mockRepo.updateEnvironmentCallCount == 3)
+        #expect(mockEnvRepo.updateEnvironmentCallCount == 3)
     }
 }
 
@@ -125,6 +157,46 @@ final class MockEnvironmentRepository: EnvironmentRepositoryProtocol, @unchecked
         if shouldThrowError { throw MockEnvironmentError.repositoryError }
         updateEnvironmentCallCount += 1
         _environment = environment
+    }
+}
+
+final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked Sendable {
+    private var _pump: Pump
+    private var _solarPanel: SolarPanel
+    private var _storageTank: StorageTank
+
+    init(
+        pump: Pump = Pump(),
+        solarPanel: SolarPanel = SolarPanel(),
+        storageTank: StorageTank = StorageTank()
+    ) {
+        self._pump = pump
+        self._solarPanel = solarPanel
+        self._storageTank = storageTank
+    }
+
+    var pump: Pump {
+        get async throws { _pump }
+    }
+
+    var solarPanel: SolarPanel {
+        get async throws { _solarPanel }
+    }
+
+    var storageTank: StorageTank {
+        get async throws { _storageTank }
+    }
+
+    func updatePump(_ pump: Pump) async throws {
+        _pump = pump
+    }
+
+    func updateSolarPanel(_ solarPanel: SolarPanel) async throws {
+        _solarPanel = solarPanel
+    }
+
+    func updateStorageTank(_ storageTank: StorageTank) async throws {
+        _storageTank = storageTank
     }
 }
 

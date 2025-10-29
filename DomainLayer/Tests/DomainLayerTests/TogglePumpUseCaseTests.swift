@@ -13,64 +13,88 @@ struct TogglePumpUseCaseTests {
     @Test func togglePumpFromOffToOn() async throws {
         // Given: pump is off
         let initialPump = Pump(isRunning: false, flowRate: 1.0)
-        let mockRepo = MockSystemStateRepository(pump: initialPump)
-        let useCase = TogglePumpUseCase(systemStateRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository(pump: initialPump)
+        let useCase = TogglePumpUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute toggle
-        try await useCase.execute()
+        let systemState = try await useCase.execute()
 
         // Then: pump should be on
-        let updatedPump = try await mockRepo.pump
+        #expect(systemState.pump.isRunning == true)
+        let updatedPump = try await mockStateRepo.pump
         #expect(updatedPump.isRunning == true)
     }
 
     @Test func togglePumpFromOnToOff() async throws {
         // Given: pump is on
         let initialPump = Pump(isRunning: true, flowRate: 1.0)
-        let mockRepo = MockSystemStateRepository(pump: initialPump)
-        let useCase = TogglePumpUseCase(systemStateRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository(pump: initialPump)
+        let useCase = TogglePumpUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute toggle
-        try await useCase.execute()
+        let systemState = try await useCase.execute()
 
         // Then: pump should be off
-        let updatedPump = try await mockRepo.pump
+        #expect(systemState.pump.isRunning == false)
+        let updatedPump = try await mockStateRepo.pump
         #expect(updatedPump.isRunning == false)
     }
 
     @Test func updateRepositoryIsCalledWithToggledState() async throws {
         // Given: pump with specific state
         let initialPump = Pump(isRunning: false, flowRate: 1.0)
-        let mockRepo = MockSystemStateRepository(pump: initialPump)
-        let useCase = TogglePumpUseCase(systemStateRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository(pump: initialPump)
+        let useCase = TogglePumpUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute toggle
-        try await useCase.execute()
+        let systemState = try await useCase.execute()
 
-        // Then: repository was updated
-        #expect(mockRepo.updatePumpCallCount == 1)
-        #expect(mockRepo.lastUpdatedPump?.isRunning == true)
+        // Then: repository was updated and state returned
+        #expect(mockStateRepo.updatePumpCallCount == 1)
+        #expect(mockStateRepo.lastUpdatedPump?.isRunning == true)
+        #expect(systemState.pump.isRunning == true)
     }
 
     @Test func flowRateIsPreservedWhenToggling() async throws {
         // Given: pump with custom flow rate
         let customFlowRate = 1.5
         let initialPump = Pump(isRunning: false, flowRate: customFlowRate)
-        let mockRepo = MockSystemStateRepository(pump: initialPump)
-        let useCase = TogglePumpUseCase(systemStateRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository(pump: initialPump)
+        let useCase = TogglePumpUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When: execute toggle
-        try await useCase.execute()
+        let systemState = try await useCase.execute()
 
         // Then: flow rate is preserved
-        let updatedPump = try await mockRepo.pump
+        #expect(systemState.pump.flowRate == customFlowRate)
+        let updatedPump = try await mockStateRepo.pump
         #expect(updatedPump.flowRate == customFlowRate)
     }
 
     @Test func errorPropagationFromRepository() async throws {
         // Given: repository that throws error
-        let mockRepo = MockSystemStateRepository(shouldThrowError: true)
-        let useCase = TogglePumpUseCase(systemStateRepository: mockRepo)
+        let mockEnvRepo = MockEnvironmentRepository()
+        let mockStateRepo = MockSystemStateRepository(shouldThrowError: true)
+        let useCase = TogglePumpUseCase(
+            environmentRepository: mockEnvRepo,
+            systemStateRepository: mockStateRepo
+        )
 
         // When/Then: execute toggle throws error
         await #expect(throws: MockError.self) {
@@ -133,6 +157,24 @@ final class MockSystemStateRepository: SystemStateRepositoryProtocol, @unchecked
     func updateSolarPanel(_ solarPanel: SolarPanel) async throws {}
 
     func updateStorageTank(_ storageTank: StorageTank) async throws {}
+}
+
+final class MockEnvironmentRepository: EnvironmentRepositoryProtocol, @unchecked Sendable {
+    private var _environment: Environment
+
+    init(environment: Environment = Environment()) {
+        self._environment = environment
+    }
+
+    var environment: Environment {
+        get async throws {
+            _environment
+        }
+    }
+
+    func updateEnvironment(_ environment: Environment) async throws {
+        _environment = environment
+    }
 }
 
 enum MockError: Error {
