@@ -77,11 +77,7 @@ public final class SimulationViewModel {
 
     /// Responds to play/pause simulation button
     public func respondToSimulationToggle() {
-        if isSimulationRunning {
-            stopSimulation()
-        } else {
-            startSimulation()
-        }
+        isSimulationRunning ? stopSimulation() : startSimulation()
     }
 
     // MARK: - Formatted Display Properties
